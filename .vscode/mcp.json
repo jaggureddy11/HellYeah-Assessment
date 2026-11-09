@@ -1,0 +1,14 @@
+{
+  "servers": {
+    "interview-panel": {
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/.interview/ivkit/panel_mcp.py"
+      ],
+      "env": {
+        "INTERVIEW_REPO": "${workspaceFolder}"
+      }
+    }
+  }
+}

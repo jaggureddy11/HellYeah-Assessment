@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "interview-panel": {
+      "command": "python3",
+      "args": [
+        "${CLAUDE_PROJECT_DIR}/.interview/ivkit/panel_mcp.py"
+      ],
+      "env": {
+        "INTERVIEW_REPO": "${CLAUDE_PROJECT_DIR}"
+      }
+    }
+  }
+}

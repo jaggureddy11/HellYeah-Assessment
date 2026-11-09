@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+/target/
+/dist/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# interview tooling, leave this alone. The session's own files stay out of your
+# commits, and out of the way of git stash, checkout, reset and clean -fd.
+.interview/*
+!.interview/ivkit/
+!.interview/session.json
+.interview/ivkit/__pycache__/

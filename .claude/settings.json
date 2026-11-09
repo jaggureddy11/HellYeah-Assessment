@@ -1,0 +1,60 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"python3\" \"$CLAUDE_PROJECT_DIR/.interview/ivkit/hook_log.py\" --tool claude-code session_start || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"python3\" \"$CLAUDE_PROJECT_DIR/.interview/ivkit/hook_log.py\" --tool claude-code user_prompt || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"python3\" \"$CLAUDE_PROJECT_DIR/.interview/ivkit/hook_log.py\" --tool claude-code tool_use || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"python3\" \"$CLAUDE_PROJECT_DIR/.interview/ivkit/hook_log.py\" --tool claude-code stop || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"python3\" \"$CLAUDE_PROJECT_DIR/.interview/ivkit/hook_log.py\" --tool claude-code session_end || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

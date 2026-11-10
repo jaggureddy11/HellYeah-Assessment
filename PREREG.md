@@ -131,3 +131,11 @@ All statistics below are directly from [analysis/out/part1_q1_q2_q3_q7.txt](anal
 2. **Competitor CPM caveat:** The `same_hook` CPM finding (`+$1.574` in `prev_1_3d`) uses `235` exposure rows generated from only `22` competitor launches, treats days/launches as independent across creatives, ignores CPM drift over time, and has not been checked with a placebo/permutation test; therefore I will not build the policy on it.
 3. **Diminishing-returns endogeneity caveat:** The estimated diminishing-returns slope (`-0.349` ROAS per `+$100` spend, age-adjusted) comes from observational budgets chosen by the buyer, which may have reacted to unobserved performance or pacing changes; therefore the policy will use a shrunk curvature penalty plus a hard per-creative budget cap rather than plugging in the point estimate directly.
 4. **Pending reproducibility check:** The second run of `analysis/explore.py` was cancelled before completion, so bit-for-bit reproducibility of `analysis/out/` is not yet verified.
+
+---
+
+## Entry 3 — 2026-11-11 05:04:19 IST (+0530)
+
+1. **Evaluation method:** Headline evidence will come from the simulated delivery environment (`sim/env.py` + `sim/world_config.json`), not historical replay, because counterfactual daily budget allocations cannot be replayed against fixed observational history.
+2. **Calibration check scope:** The 60-day replay in `sim.calibrate` replays the same days 1–60 from which `sim/world_config.json` was fitted, so it is strictly an in-sample sanity check and not proof that the simulator matches reality out-of-sample.
+3. **Observed calibration fit & mismatch:** Across 20 seeds (`python -m sim.calibrate`), the simulated attribution-lag curve matches the real curve closely at ages 0–7 (`0.3124 +/- 0.0582` vs `0.3444` at age 0, `0.5431` vs `0.5441` at age 1, ..., `1.0000` vs `1.0000` at age 7) and on the days 47–49 outage (`0.5980 +/- 0.0481` vs `0.5909`); however, the simulator under-delivers total spend by about `2.7%` (`$108,468.11 +/- $155.25` vs `$111,447.33`).

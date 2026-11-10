@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "source": "Computed strictly from data/creatives.csv, data/daily_reported.csv, data/daily_final.csv",
+  "global_mean_roas": 1.9103,
+  "pooled_roas": 2.249,
+  "format_mean_roas": {
+    "carousel": 1.8675,
+    "static_image": 1.2896,
+    "story": 2.5977,
+    "video_15s": 2.3313,
+    "video_30s": 1.5964
+  },
+  "lag_completion_by_age": {
+    "1": 0.3444,
+    "2": 0.5441,
+    "3": 0.6609,
+    "4": 0.7639,
+    "5": 0.8472,
+    "6": 0.9158,
+    "7": 0.9718
+  }
+}

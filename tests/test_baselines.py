@@ -60,5 +60,5 @@ def test_clairvoyant_beats_or_equals_b1_and_all_run_through_env() -> None:
 
         assert r_cl["total_revenue"] >= r_b1["total_revenue"]
         assert r_b2["total_revenue"] > 0.0
-        assert r_po["total_revenue"] == pytest.approx(r_b1["total_revenue"], abs=1e-6)
+        assert r_po["total_revenue"] > r_b1["total_revenue"]
 

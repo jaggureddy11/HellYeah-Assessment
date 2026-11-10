@@ -3,6 +3,7 @@
 Run from repository root:
     uv run python -m sim.evaluate
     uv run python -m sim.evaluate --config sim/world_config.json --seeds 20
+    uv run python -m sim.evaluate --policy-opt lag_correction=false --policy-opt format_prior=false
 """
 
 from __future__ import annotations
@@ -18,6 +19,34 @@ from policy import Policy
 from sim.baselines import B1Uniform, B2WindowedGreedy
 from sim.clairvoyant import Clairvoyant
 from sim.env import run
+
+
+def _parse_opt_value(raw: str) -> Any:
+    low = raw.strip().lower()
+    if low == "true":
+        return True
+    if low == "false":
+        return False
+    try:
+        return int(raw)
+    except ValueError:
+        pass
+    try:
+        return float(raw)
+    except ValueError:
+        return raw
+
+
+def parse_policy_opts(items: list[str] | None) -> dict[str, Any]:
+    opts: dict[str, Any] = {}
+    if not items:
+        return opts
+    for item in items:
+        if "=" not in item:
+            raise ValueError(f"Expected key=value for --policy-opt, got: {item!r}")
+        k, v = item.split("=", 1)
+        opts[k.strip()] = _parse_opt_value(v)
+    return opts
 
 
 def bootstrap_mean_ci(
@@ -45,6 +74,7 @@ def evaluate(
     start_seed: int = 1000,
     n_boot: int = 2000,
     data_dir: str | Path = "data",
+    policy_options: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     world_cfg = json.loads(Path(config_path).read_text(encoding="utf-8"))
     seeds = list(range(start_seed, start_seed + n_seeds))
@@ -58,11 +88,19 @@ def evaluate(
             step_dollars=5.0,
         )
 
+    def make_policy(creatives: list[dict[str, Any]], daily_budget: float, seed: int) -> Policy:
+        return Policy(
+            creatives=creatives,
+            daily_budget=daily_budget,
+            seed=seed,
+            options=policy_options,
+        )
+
     policies = {
         "B1 Uniform": B1Uniform,
         "B2 Windowed Greedy": B2WindowedGreedy,
         "Clairvoyant ($5 step)": make_clairvoyant,
-        "Policy (policy.py)": Policy,
+        "Policy (policy.py)": make_policy,
     }
 
     rev_by_pol: dict[str, list[float]] = {name: [] for name in policies}
@@ -96,6 +134,7 @@ def evaluate(
         "config_path": str(config_path),
         "n_seeds": n_seeds,
         "seeds": seeds,
+        "policy_options": dict(policy_options or {}),
         "rev_by_pol": rev_by_pol,
         "spend_by_pol": spend_by_pol,
         "yours_norm_ci": bootstrap_mean_ci(yours_norm, n_boot=n_boot),
@@ -111,16 +150,25 @@ def main() -> None:
     parser.add_argument("--seeds", type=int, default=20, help="Number of paired seeds to run.")
     parser.add_argument("--start-seed", type=int, default=1000, help="Starting integer seed.")
     parser.add_argument("--n-boot", type=int, default=2000, help="Bootstrap replicates for 95% CI.")
+    parser.add_argument(
+        "--policy-opt",
+        action="append",
+        default=[],
+        help="Override Policy option as key=value (repeatable).",
+    )
     args = parser.parse_args()
+    policy_options = parse_policy_opts(args.policy_opt)
 
     res = evaluate(
         config_path=args.config,
         n_seeds=args.seeds,
         start_seed=args.start_seed,
         n_boot=args.n_boot,
+        policy_options=policy_options,
     )
 
-    print(f"=== Evaluation (days 61-90, n_seeds={res['n_seeds']}, config={res['config_path']}) ===")
+    opts_str = json.dumps(res["policy_options"]) if res["policy_options"] else "defaults"
+    print(f"=== Evaluation (days 61-90, n_seeds={res['n_seeds']}, config={res['config_path']}, policy_opts={opts_str}) ===")
     print(f"{'Policy':<24} | {'Revenue mean [95% CI] ($)':<34} | {'Spend mean [95% CI] ($)':<32}")
     print("-" * 96)
     for name in ["B1 Uniform", "B2 Windowed Greedy", "Clairvoyant ($5 step)", "Policy (policy.py)"]:
@@ -147,4 +195,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

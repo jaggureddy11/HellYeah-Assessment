@@ -139,3 +139,14 @@ All statistics below are directly from [analysis/out/part1_q1_q2_q3_q7.txt](anal
 1. **Evaluation method:** Headline evidence will come from the simulated delivery environment (`sim/env.py` + `sim/world_config.json`), not historical replay, because counterfactual daily budget allocations cannot be replayed against fixed observational history.
 2. **Calibration check scope:** The 60-day replay in `sim.calibrate` replays the same days 1–60 from which `sim/world_config.json` was fitted, so it is strictly an in-sample sanity check and not proof that the simulator matches reality out-of-sample.
 3. **Observed calibration fit & mismatch:** Across 20 seeds (`python -m sim.calibrate`), the simulated attribution-lag curve matches the real curve closely at ages 0–7 (`0.3124 +/- 0.0582` vs `0.3444` at age 0, `0.5431` vs `0.5441` at age 1, ..., `1.0000` vs `1.0000` at age 7) and on the days 47–49 outage (`0.5980 +/- 0.0481` vs `0.5909`); however, the simulator under-delivers total spend by about `2.7%` (`$108,468.11 +/- $155.25` vs `$111,447.33`).
+
+---
+
+## Entry 4 — 2026-11-11 05:11:01 IST (+0530)
+
+1. **Baseline evaluation (20 seeds, `uv run python -m sim.evaluate`):**
+   - `B1 Uniform`: `$107,095.93 [95% CI: $105,557.01, $108,600.41]` revenue (`$58,557.48` spend).
+   - `B2 Windowed Greedy`: `$83,061.64 [95% CI: $81,721.66, $84,448.15]` revenue (`$47,639.69` spend); `(B2 - B1) / (clairvoyant - B1) = -0.6021 [-0.6704, -0.5370]`.
+   - `Clairvoyant ($5 step)`: `$148,048.96 [95% CI: $145,799.16, $150,179.56]` revenue (`$58,564.18` spend), giving `+38.36% [95% CI: +35.81%, +40.85%]` headroom over `B1`.
+2. **Why B2 loses to B1:** Concentrating 75% of the `$2,000/day` budget (`$300/day` each) on just 5 creatives hits per-creative and soft delivery caps (total spend `$47.6k` vs `$58.6k` for `B1` and `Clairvoyant`, wasting `~$10.9k` of budget) as well as Hill saturation, while chasing noisy lagged 7-day estimates.
+3. **Clairvoyant scope note:** The `Clairvoyant` oracle is myopic per day (maximizing single-day expected revenue in `$5` increments without dynamic multi-day fatigue planning), so it is a practical upper bound rather than an exact 30-day dynamic optimum.

@@ -1,0 +1,85 @@
+=== Q4: DIMINISHING RETURNS (WITHIN-CREATIVE SPEND VS ROAS, daily_final.csv) ===
+Sample: total_rows=1784, spend>0 rows=1733 (dropped 51 zero-spend rows), n_creatives=40
+NAIVE pooled (confounded across creatives): corr(spend, ROAS)=0.148, slope per +$100=0.606
+
+WITHIN-CREATIVE (creative fixed effects, cluster bootstrap across 40 creatives):
+  Slope ROAS per +$100 spend: -0.097 [95% CI: -0.302, 0.081]
+  Within-creative corr(spend, ROAS): -0.020 [95% CI: -0.060, 0.017]
+  Slope ROAS per +1 log(spend) (e.g. e-fold): -0.088 [95% CI: -0.293, 0.087]
+  Age-adjusted slope ROAS per +$100 spend: -0.349 [95% CI: -0.548, -0.163]
+  Mechanism checks (per +$100 spend within creative):
+    CPM ($/1k impr): 0.389 [95% CI: 0.200, 0.641]
+    CTR (clicks/impr): 0.00133 [95% CI: 0.00090, 0.00181]
+    CVR (pur/clicks): -0.0029 [95% CI: -0.0058, -0.0003]
+
+Within-creative demeaned ROAS by demeaned spend quintile:
+  Q1 (lowest)  : n_rows=347, n_creatives=29, mean_spend=$  33.1 (dm= -52.2), mean_dm_ROAS=0.106 [95% CI: -0.097, 0.323]
+  Q2           : n_rows=346, n_creatives=39, mean_spend=$  32.7 (dm= -22.4), mean_dm_ROAS=0.015 [95% CI: -0.182, 0.246]
+  Q3           : n_rows=347, n_creatives=40, mean_spend=$  42.6 (dm=  -6.4), mean_dm_ROAS=-0.113 [95% CI: -0.291, 0.055]
+  Q4           : n_rows=346, n_creatives=39, mean_spend=$  64.7 (dm= +10.4), mean_dm_ROAS=-0.023 [95% CI: -0.193, 0.131]
+  Q5 (highest) : n_rows=347, n_creatives=35, mean_spend=$ 148.3 (dm= +70.6), mean_dm_ROAS=0.016 [95% CI: -0.136, 0.159]
+
+Within-creative demeaned ROAS & CPM by absolute spend bin:
+  (0,25)    : n_rows=491, n_creatives=33, mean_dm_ROAS=0.046 [95% CI: -0.095, 0.201], mean_dm_CPM=$-0.21
+  [25,50)   : n_rows=424, n_creatives=40, mean_dm_ROAS=0.014 [95% CI: -0.148, 0.179], mean_dm_CPM=$-0.03
+  [50,100)  : n_rows=461, n_creatives=36, mean_dm_ROAS=-0.052 [95% CI: -0.163, 0.057], mean_dm_CPM=$+0.12
+  [100,150) : n_rows=208, n_creatives=25, mean_dm_ROAS=-0.095 [95% CI: -0.244, 0.089], mean_dm_CPM=$+0.07
+  [150+)    : n_rows=149, n_creatives=22, mean_dm_ROAS=0.102 [95% CI: -0.134, 0.309], mean_dm_CPM=$+0.30
+
+=== Q5: FATIGUE (WITHIN-CREATIVE ROAS & CTR VS DAYS SINCE LAUNCH) ===
+Sample: n_rows=1733, n_creatives=40, creatives_with_day_gaps_from_launch_to_60=0
+
+Within-creative linear slopes per +10 days since launch (creative cluster bootstrap):
+  ROAS slope (/10d): -0.123 [95% CI: -0.193, -0.054]
+  CTR  slope (/10d): -0.00082 [95% CI: -0.00099, -0.00064] (in pct pts: -0.082 pp/10d)
+  CVR  slope (/10d): 0.0002 [95% CI: -0.0008, 0.0013]
+  CPM  slope (/10d): -0.067 [95% CI: -0.160, 0.016]
+  Spend slope(/10d): -14.63 [95% CI: -18.75, -10.12]
+
+Binned by days since launch (creative FE demeaned):
+  age 0-6  : n_rows=273, n_creatives=40, dm_ROAS=0.201 [95% CI: -0.045, 0.447], dm_CTR=0.272 [95% CI: 0.216, 0.331] pp, mean_spend=$ 90.2
+  age 7-13 : n_rows=272, n_creatives=40, dm_ROAS=0.448 [95% CI: 0.136, 0.815], dm_CTR=0.101 [95% CI: 0.069, 0.130] pp, mean_spend=$ 92.9
+  age 14-20: n_rows=273, n_creatives=40, dm_ROAS=-0.078 [95% CI: -0.290, 0.151], dm_CTR=-0.039 [95% CI: -0.073, -0.005] pp, mean_spend=$ 71.3
+  age 21-27: n_rows=242, n_creatives=37, dm_ROAS=-0.194 [95% CI: -0.421, 0.052], dm_CTR=-0.100 [95% CI: -0.145, -0.051] pp, mean_spend=$ 52.1
+  age 28-34: n_rows=209, n_creatives=32, dm_ROAS=-0.246 [95% CI: -0.494, 0.004], dm_CTR=-0.112 [95% CI: -0.157, -0.064] pp, mean_spend=$ 48.8
+  age 35-41: n_rows=174, n_creatives=28, dm_ROAS=-0.038 [95% CI: -0.315, 0.238], dm_CTR=-0.095 [95% CI: -0.133, -0.059] pp, mean_spend=$ 46.2
+  age 42-48: n_rows=143, n_creatives=23, dm_ROAS=-0.305 [95% CI: -0.670, 0.067], dm_CTR=-0.081 [95% CI: -0.146, -0.002] pp, mean_spend=$ 42.4
+  age 49+  : n_rows=147, n_creatives=18, dm_ROAS=-0.047 [95% CI: -0.464, 0.466], dm_CTR=-0.106 [95% CI: -0.164, -0.045] pp, mean_spend=$ 35.0
+
+=== Q6: DAY-OF-WEEK EFFECT (day 1 = Monday, daily_final.csv) ===
+Sample: n_rows=1733, n_creatives=40
+  Mon: n_rows=251, n_creatives=40, raw_ROAS=1.912, dm_ROAS=-0.015 [95% CI: -0.229, 0.218], dm_CPM=$-0.00 [-0.10, +0.11], dm_CTR=-0.051pp
+  Tue: n_rows=260, n_creatives=40, raw_ROAS=1.864, dm_ROAS=-0.057 [95% CI: -0.336, 0.248], dm_CPM=$-0.02 [-0.11, +0.08], dm_CTR=-0.065pp
+  Wed: n_rows=261, n_creatives=40, raw_ROAS=1.893, dm_ROAS=-0.039 [95% CI: -0.255, 0.164], dm_CPM=$-0.02 [-0.11, +0.07], dm_CTR=-0.049pp
+  Thu: n_rows=264, n_creatives=40, raw_ROAS=2.047, dm_ROAS=0.093 [95% CI: -0.150, 0.363], dm_CPM=$-0.11 [-0.18, -0.05], dm_CTR=-0.054pp
+  Fri: n_rows=230, n_creatives=40, raw_ROAS=2.133, dm_ROAS=0.193 [95% CI: -0.070, 0.496], dm_CPM=$+0.03 [-0.06, +0.12], dm_CTR=+0.109pp
+  Sat: n_rows=232, n_creatives=40, raw_ROAS=1.800, dm_ROAS=-0.148 [95% CI: -0.387, 0.106], dm_CPM=$+0.09 [-0.01, +0.19], dm_CTR=+0.146pp
+  Sun: n_rows=235, n_creatives=40, raw_ROAS=1.917, dm_ROAS=-0.025 [95% CI: -0.261, 0.209], dm_CPM=$+0.05 [-0.03, +0.13], dm_CTR=-0.009pp
+
+Weekend (Sat+Sun) minus Weekday (Mon-Fri) dm_ROAS: -0.118 [95% CI: -0.356, 0.129]
+
+=== Q8: COMPETITOR LAUNCHES VS OUR ROAS & CPM (daily_final.csv) ===
+competitor_launches.csv: n=22 rows, days 5..52
+  by platform: {'meta': 10, 'youtube': 7, 'google': 4, 'tiktok': 1}
+  by format: {'video_15s': 6, 'carousel': 6, 'story': 5, 'video_30s': 3, 'static_image': 2}
+  by hook_type: {'curiosity': 5, 'founder_story': 4, 'social_proof': 4, 'ugc_testimonial': 3, 'problem_solution': 3, 'benefit_led': 2, 'urgency': 1}
+
+Lookback window prev_1_3d (comp_day in [day-3, day-1]):
+  same_hook  : n_exp= 235 (38 creatives), n_unexp=1498 | diff dm_ROAS=-0.243 [95% CI: -0.617, 0.166] | diff dm_CPM=$1.574 [95% CI: 1.368, 1.774]
+  same_format: n_exp= 322 (39 creatives), n_unexp=1411 | diff dm_ROAS=-0.198 [95% CI: -0.405, 0.003] | diff dm_CPM=$0.279 [95% CI: -0.051, 0.648]
+  any_launch : n_exp=1264 (40 creatives), n_unexp= 469 | diff dm_ROAS=-0.267 [95% CI: -0.537, -0.027] | diff dm_CPM=$0.424 [95% CI: 0.317, 0.538]
+
+Lookback window prev_1_7d (comp_day in [day-7, day-1]):
+  same_hook  : n_exp= 480 (39 creatives), n_unexp=1253 | diff dm_ROAS=-0.084 [95% CI: -0.380, 0.224] | diff dm_CPM=$1.621 [95% CI: 1.421, 1.840]
+  same_format: n_exp= 625 (39 creatives), n_unexp=1108 | diff dm_ROAS=-0.011 [95% CI: -0.242, 0.231] | diff dm_CPM=$0.185 [95% CI: -0.077, 0.478]
+  any_launch : n_exp=1631 (40 creatives), n_unexp= 102 | diff dm_ROAS=0.046 [95% CI: -0.279, 0.377] | diff dm_CPM=$0.317 [95% CI: 0.121, 0.513]
+
+Lookback window win_0_3d (comp_day in [day-3, day-0]):
+  same_hook  : n_exp= 297 (39 creatives), n_unexp=1436 | diff dm_ROAS=-0.309 [95% CI: -0.624, 0.019] | diff dm_CPM=$1.576 [95% CI: 1.364, 1.788]
+  same_format: n_exp= 399 (39 creatives), n_unexp=1334 | diff dm_ROAS=-0.187 [95% CI: -0.376, -0.016] | diff dm_CPM=$0.241 [95% CI: -0.074, 0.591]
+  any_launch : n_exp=1416 (40 creatives), n_unexp= 317 | diff dm_ROAS=-0.253 [95% CI: -0.546, 0.026] | diff dm_CPM=$0.603 [95% CI: 0.473, 0.738]
+
+Lookback window win_0_7d (comp_day in [day-7, day-0]):
+  same_hook  : n_exp= 525 (39 creatives), n_unexp=1208 | diff dm_ROAS=-0.147 [95% CI: -0.409, 0.128] | diff dm_CPM=$1.631 [95% CI: 1.421, 1.848]
+  same_format: n_exp= 683 (39 creatives), n_unexp=1050 | diff dm_ROAS=-0.047 [95% CI: -0.245, 0.149] | diff dm_CPM=$0.191 [95% CI: -0.077, 0.484]
+  any_launch : n_exp=1645 (40 creatives), n_unexp=  88 | diff dm_ROAS=0.009 [95% CI: -0.343, 0.375] | diff dm_CPM=$0.398 [95% CI: 0.243, 0.568]

@@ -1,0 +1,119 @@
+=== Q1: REPORTED VS FINAL (daily_reported.csv vs daily_final.csv) ===
+Row alignment: total=1784, matched_both=1784, unmatched=0
+
+Column differences (across n=1784 matched rows):
+  - budget     : n_diff=   0/1784 (  0.0%), sum_rep=   119992.12, sum_fin=   119992.12, ratio_sum=1.0000, max_abs_diff=0.00
+  - spend      : n_diff=   0/1784 (  0.0%), sum_rep=   111447.33, sum_fin=   111447.33, ratio_sum=1.0000, max_abs_diff=0.00
+  - impressions: n_diff=   0/1784 (  0.0%), sum_rep=  8733362.00, sum_fin=  8733362.00, ratio_sum=1.0000, max_abs_diff=0.00
+  - clicks     : n_diff=   0/1784 (  0.0%), sum_rep=   138295.00, sum_fin=   138295.00, ratio_sum=1.0000, max_abs_diff=0.00
+  - purchases  : n_diff= 108/1784 (  6.1%), sum_rep=     3236.00, sum_fin=     3413.00, ratio_sum=1.0547, max_abs_diff=9.00
+  - revenue    : n_diff= 201/1784 ( 11.3%), sum_rep=   238865.17, sum_fin=   250639.78, ratio_sum=1.0493, max_abs_diff=412.09
+
+Final/Reported by age at day 60 (age = 60 - day):
+  age 0 (day 60)            : n=  40, n_rev_changed= 28, rev_fin/rep=2.9038 ($3,475/$1,197), pur_fin/rep=3.5000 (49/14)
+  age 1 (day 59)            : n=  40, n_rev_changed= 23, rev_fin/rep=1.8378 ($2,774/$1,510), pur_fin/rep=1.9545 (43/22)
+  age 2 (day 58)            : n=  40, n_rev_changed= 29, rev_fin/rep=1.5131 ($4,815/$3,182), pur_fin/rep=1.4667 (66/45)
+  age 3 (day 57)            : n=  40, n_rev_changed= 24, rev_fin/rep=1.3091 ($3,552/$2,713), pur_fin/rep=1.3077 (51/39)
+  age 4-6 (days 54-56)      : n= 120, n_rev_changed= 75, rev_fin/rep=1.1042 ($13,325/$12,067), pur_fin/rep=1.0843 (180/166)
+  age 7-10 (days 50-53)     : n= 160, n_rev_changed=  0, rev_fin/rep=1.0000 ($15,444/$15,444), pur_fin/rep=1.0000 (210/210)
+  age 11-13 (days 47-49!)   : n= 120, n_rev_changed= 22, rev_fin/rep=1.6924 ($11,004/$6,502), pur_fin/rep=1.8605 (160/86)
+  age 14-29 (days 31-46)    : n= 584, n_rev_changed=  0, rev_fin/rep=1.0000 ($71,857/$71,857), pur_fin/rep=1.0000 (977/977)
+  age 30-59 (days 1-30)     : n= 640, n_rev_changed=  0, rev_fin/rep=1.0000 ($124,393/$124,393), pur_fin/rep=1.0000 (1677/1677)
+
+Day-by-day detail for days 44 to 60:
+  day | age60 | n_rows | n_diff | pur_rep -> pur_fin (ratio) | rev_rep -> rev_fin (ratio)
+   44 |    16 |     40 |      0 |      46 ->      46 (1.000) | $ 2871.67 -> $ 2871.67 (1.000)
+   45 |    15 |     40 |      0 |      76 ->      76 (1.000) | $ 5329.75 -> $ 5329.75 (1.000)
+   46 |    14 |     40 |      0 |      74 ->      74 (1.000) | $ 6329.56 -> $ 6329.56 (1.000)
+   47 |    13 |     40 |      6 |      33 ->      52 (1.576) | $ 2261.72 -> $ 3476.17 (1.537)
+   48 |    12 |     40 |      8 |      23 ->      55 (2.391) | $ 1789.29 -> $ 3486.75 (1.949)
+   49 |    11 |     40 |      8 |      30 ->      53 (1.767) | $ 2451.19 -> $ 4041.11 (1.649)
+   50 |    10 |     40 |      0 |      63 ->      63 (1.000) | $ 4516.85 -> $ 4516.85 (1.000)
+   51 |     9 |     40 |      0 |      56 ->      56 (1.000) | $ 3756.52 -> $ 3756.52 (1.000)
+   52 |     8 |     40 |      0 |      50 ->      50 (1.000) | $ 3950.25 -> $ 3950.25 (1.000)
+   53 |     7 |     40 |      0 |      41 ->      41 (1.000) | $ 3220.05 -> $ 3220.05 (1.000)
+   54 |     6 |     40 |     24 |      51 ->      53 (1.039) | $ 3648.69 -> $ 3754.61 (1.029)
+   55 |     5 |     40 |     22 |      59 ->      62 (1.051) | $ 4142.12 -> $ 4522.97 (1.092)
+   56 |     4 |     40 |     29 |      56 ->      65 (1.161) | $ 4276.52 -> $ 5047.66 (1.180)
+   57 |     3 |     40 |     24 |      39 ->      51 (1.308) | $ 2713.44 -> $ 3552.09 (1.309)
+   58 |     2 |     40 |     29 |      45 ->      66 (1.467) | $ 3182.00 -> $ 4814.75 (1.513)
+   59 |     1 |     40 |     23 |      22 ->      43 (1.955) | $ 1509.65 -> $ 2774.50 (1.838)
+   60 |     0 |     40 |     28 |      14 ->      49 (3.500) | $ 1196.87 -> $ 3475.49 (2.904)
+
+Days 1-46 check (n=1224 rows): rev_changed=0, pur_changed=0
+
+Closer look at days 44-52 in daily_final (checking if anomaly is reporting-only or delivery too):
+  day 44 (n=40): spend=$1897, pur_rep=46, pur_fin=46, rev_rep=$2872 (ROAS=1.51), rev_fin=$2872 (ROAS=1.51), ratio=1.000
+  day 45 (n=40): spend=$1909, pur_rep=76, pur_fin=76, rev_rep=$5330 (ROAS=2.79), rev_fin=$5330 (ROAS=2.79), ratio=1.000
+  day 46 (n=40): spend=$1897, pur_rep=74, pur_fin=74, rev_rep=$6330 (ROAS=3.34), rev_fin=$6330 (ROAS=3.34), ratio=1.000
+  day 47 (n=40): spend=$1876, pur_rep=33, pur_fin=52, rev_rep=$2262 (ROAS=1.21), rev_fin=$3476 (ROAS=1.85), ratio=1.537
+  day 48 (n=40): spend=$1903, pur_rep=23, pur_fin=55, rev_rep=$1789 (ROAS=0.94), rev_fin=$3487 (ROAS=1.83), ratio=1.949
+  day 49 (n=40): spend=$1909, pur_rep=30, pur_fin=53, rev_rep=$2451 (ROAS=1.28), rev_fin=$4041 (ROAS=2.12), ratio=1.649
+  day 50 (n=40): spend=$1859, pur_rep=63, pur_fin=63, rev_rep=$4517 (ROAS=2.43), rev_fin=$4517 (ROAS=2.43), ratio=1.000
+  day 51 (n=40): spend=$1818, pur_rep=56, pur_fin=56, rev_rep=$3757 (ROAS=2.07), rev_fin=$3757 (ROAS=2.07), ratio=1.000
+  day 52 (n=40): spend=$1765, pur_rep=50, pur_fin=50, rev_rep=$3950 (ROAS=2.24), rev_fin=$3950 (ROAS=2.24), ratio=1.000
+
+=== Q2: SPEND VS BUDGET (daily_final.csv) ===
+Total rows n=1784: exact_equal=1693 (94.9%), spend<budget=91 (5.1%), spend<0.99*budget=91 (5.1%), spend>budget=0
+Total budget=$119,992.12, total spend=$111,447.33 (overall delivery=92.88%)
+
+Budget < $1: n=51 (budget==0: n=51, 0<budget<1: n=0)
+  When budget < $1 (n=51): max_spend=$0.00, sum_spend=$0.00, sum_impr=0, sum_clicks=0, sum_pur=0, sum_rev=$0.00
+
+When budget >= $1 (n=1733): spend<budget count=91 (5.3%), mean spend/budget=0.9819, median=1.0000, min=0.1354, p05=0.9638
+
+Delivery by budget bin:
+  [0,1)     : n=  51, frac(spend<budget)=  0.0%, sum(spend)/sum(budget)=nan
+  [1,25)    : n= 491, frac(spend<budget)=  0.0%, sum(spend)/sum(budget)=1.0000
+  [25,50)   : n= 424, frac(spend<budget)=  0.0%, sum(spend)/sum(budget)=1.0000
+  [50,100)  : n= 427, frac(spend<budget)=  1.4%, sum(spend)/sum(budget)=0.9982
+  [100,200) : n= 306, frac(spend<budget)= 10.5%, sum(spend)/sum(budget)=0.9622
+  [200+)    : n=  85, frac(spend<budget)= 62.4%, sum(spend)/sum(budget)=0.7217
+  Top creatives with spend<budget (among budget>=1): {'CR008': 40, 'CR031': 11, 'CR024': 10, 'CR028': 7, 'CR037': 6}
+
+=== Q3: CREATIVE ROAS VARIATION AND NOISE (daily_final.csv) ===
+Served creatives: n=40 (out of 50 total; unserved=10)
+Daily rows with spend>0: n=1733 (rows with spend==0: 51), zero-purchase days=601/1733 (34.7%)
+Creative lifetime ROAS (n=40): mean=1.910, sd=0.797, median=1.751, IQR=[1.231, 2.556], min=0.611, max=3.762
+Days served per creative (n=40): min=17, median=47.0, max=60
+Within-creative daily ROAS SD (n=40): median=1.961, IQR=[1.644, 2.280]
+
+Odd vs Even day ROAS across creatives (n=40):
+  Pearson r  = 0.866 [95% CI: 0.817, 0.917]
+  Spearman r = 0.862 [95% CI: 0.716, 0.935]
+
+First half vs Second half of life ROAS (creatives with >=4 active days, n=40):
+  Pearson r  = 0.764 [95% CI: 0.619, 0.864]
+  Spearman r = 0.713 [95% CI: 0.475, 0.843]
+  Mean (H2 - H1) ROAS = -0.302 [95% CI: -0.490, -0.103]
+
+Daily row ROAS variance decomposition (n=1733 rows, 40 creatives): total_var=5.534, within_creative_var=4.872 (within share=88.0%, between share=12.0%)
+
+=== Q7: CREATIVE ATTRIBUTES VS ROAS (LOCO TEST, n=40 served creatives) ===
+
+Attribute: format
+  carousel              : n_served= 7 (unserved= 2), mean_ROAS=1.867 (sd=0.688), median=1.909, pooled=2.145
+  static_image          : n_served= 9 (unserved= 2), mean_ROAS=1.290 (sd=0.330), median=1.218, pooled=1.323
+  story                 : n_served= 9 (unserved= 3), mean_ROAS=2.598 (sd=0.693), median=2.627, pooled=2.650
+  video_15s             : n_served= 6 (unserved= 0), mean_ROAS=2.331 (sd=0.893), median=2.299, pooled=2.467
+  video_30s             : n_served= 9 (unserved= 3), mean_ROAS=1.596 (sd=0.666), median=1.366, pooled=2.106
+  LOCO vs Global Mean (n=40, fallback=0): RMSE_global=0.8071, RMSE_format=0.7082, delta_RMSE=-0.0989 [95% CI: -0.2953, -0.0102] (negative=better), OOS_R2=0.2301 [95% CI: 0.0279, 0.5964], MAE_global=0.6792 vs MAE_format=0.5509
+
+Attribute: hook_type
+  benefit_led           : n_served= 6 (unserved= 1), mean_ROAS=1.520 (sd=0.338), median=1.616, pooled=1.542
+  curiosity             : n_served= 6 (unserved= 0), mean_ROAS=1.695 (sd=1.035), median=1.301, pooled=2.172
+  founder_story         : n_served= 7 (unserved= 0), mean_ROAS=1.969 (sd=0.840), median=1.913, pooled=2.269
+  problem_solution      : n_served= 5 (unserved= 2), mean_ROAS=1.444 (sd=0.712), median=1.218, pooled=1.669
+  social_proof          : n_served= 5 (unserved= 1), mean_ROAS=2.285 (sd=0.481), median=2.062, pooled=2.318
+  ugc_testimonial       : n_served= 8 (unserved= 2), mean_ROAS=2.142 (sd=0.856), median=2.478, pooled=2.501
+  urgency               : n_served= 3 (unserved= 4), mean_ROAS=2.520 (sd=0.994), median=2.447, pooled=2.618 [SMALL n]
+  LOCO vs Global Mean (n=40, fallback=0): RMSE_global=0.8071, RMSE_hook_type=0.8668, delta_RMSE=0.0597 [95% CI: -0.1850, 0.1072] (negative=better), OOS_R2=-0.1534 [95% CI: -0.2907, 0.4235], MAE_global=0.6792 vs MAE_hook_type=0.6816
+
+Attribute: cta
+  Get 30% off           : n_served= 5 (unserved= 0), mean_ROAS=1.379 (sd=0.612), median=1.198, pooled=1.809
+  Learn more            : n_served= 7 (unserved= 2), mean_ROAS=1.559 (sd=0.789), median=1.366, pooled=2.123
+  See reviews           : n_served= 6 (unserved= 0), mean_ROAS=1.774 (sd=0.601), median=1.779, pooled=2.017
+  Shop now              : n_served= 6 (unserved= 3), mean_ROAS=2.044 (sd=1.073), median=1.616, pooled=2.641
+  Start your routine    : n_served=10 (unserved= 4), mean_ROAS=2.255 (sd=0.795), median=2.235, pooled=2.454
+  Try it today          : n_served= 6 (unserved= 1), mean_ROAS=2.190 (sd=0.653), median=2.248, pooled=2.305
+  LOCO vs Global Mean (n=40, fallback=0): RMSE_global=0.8071, RMSE_cta=0.8427, delta_RMSE=0.0356 [95% CI: -0.1612, 0.0844] (negative=better), OOS_R2=-0.0901 [95% CI: -0.2381, 0.3661], MAE_global=0.6792 vs MAE_cta=0.7059

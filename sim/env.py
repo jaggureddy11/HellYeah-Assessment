@@ -63,6 +63,53 @@ def _hill_saturation(spend: float, sat_cfg: dict[str, Any]) -> float:
     return float(floor + (1.0 - floor) / (1.0 + (spend / half) ** power))
 
 
+def get_min_allocation(world_cfg: dict[str, Any]) -> float:
+    min_alloc_cfg = world_cfg.get("min_allocation_dollars", 1.0)
+    return float(min_alloc_cfg["value"]) if isinstance(min_alloc_cfg, dict) else float(min_alloc_cfg)
+
+
+def effective_spend_cap(budget: float, creative_cfg: dict[str, Any], world_cfg: dict[str, Any]) -> float:
+    """Deterministic delivery ceiling for a creative given daily budget."""
+    deliv_cfg = world_cfg["delivery_shortfall"]
+    soft_knee = float(deliv_cfg["global_soft_knee"])
+    soft_scale = float(deliv_cfg["global_soft_scale"])
+    creative_cap = float(creative_cfg["daily_spend_cap"])
+    global_cap = (
+        soft_knee + soft_scale * (1.0 - math.exp(-(budget - soft_knee) / soft_scale))
+        if budget > soft_knee
+        else budget
+    )
+    return float(min(creative_cap, global_cap))
+
+
+def expected_spend(budget: float, creative_cfg: dict[str, Any], world_cfg: dict[str, Any]) -> float:
+    """Deterministic expected delivered spend for a creative given allocated budget."""
+    if budget < get_min_allocation(world_cfg):
+        return 0.0
+    return float(min(budget, effective_spend_cap(budget, creative_cfg, world_cfg)))
+
+
+def expected_revenue(
+    spend: float,
+    age: int,
+    day: int,
+    creative_cfg: dict[str, Any],
+    world_cfg: dict[str, Any],
+) -> float:
+    """Deterministic expected revenue for one creative given spend, age since launch, and day.
+
+    Shared directly by both World._simulate_creative_day and Clairvoyant so they cannot drift.
+    """
+    _ = day  # Day-of-week effect is zero in world_config; signature supports future day effects.
+    if spend <= 0.0 or age < 0:
+        return 0.0
+    fatigue_rate = float(creative_cfg["fatigue_rate"])
+    fatigue_mult = math.exp(-fatigue_rate * age)
+    sat_mult = _hill_saturation(spend, world_cfg["saturation"])
+    expected_roas = float(creative_cfg["true_base_roas"]) * sat_mult * fatigue_mult
+    return float(spend * expected_roas)
+
+
 @dataclass
 class _TrueRow:
     day: int
@@ -87,10 +134,7 @@ class World:
         self.rng = np.random.default_rng(self.seed)
 
         self.daily_budget = float(self.config.get("daily_budget", 2000.0))
-        min_alloc_cfg = self.config.get("min_allocation_dollars", 1.0)
-        self.min_allocation = (
-            float(min_alloc_cfg["value"]) if isinstance(min_alloc_cfg, dict) else float(min_alloc_cfg)
-        )
+        self.min_allocation = get_min_allocation(self.config)
 
         self.creatives_by_id: dict[str, dict[str, Any]] = {
             c["creative_id"]: dict(c) for c in self.config["creatives"]
@@ -182,18 +226,8 @@ class World:
         age = max(0, day - int(self.first_served_day[cid]))
 
         budget = round(float(raw_budget), 2)
-        deliv_cfg = self.config["delivery_shortfall"]
-        soft_knee = float(deliv_cfg["global_soft_knee"])
-        soft_scale = float(deliv_cfg["global_soft_scale"])
-        jitter_sd = float(deliv_cfg["shortfall_jitter_sd"])
-        creative_cap = float(c["daily_spend_cap"])
-
-        global_cap = (
-            soft_knee + soft_scale * (1.0 - math.exp(-(budget - soft_knee) / soft_scale))
-            if budget > soft_knee
-            else budget
-        )
-        effective_cap = min(creative_cap, global_cap)
+        jitter_sd = float(self.config["delivery_shortfall"]["shortfall_jitter_sd"])
+        effective_cap = effective_spend_cap(budget, c, self.config)
         if budget <= 0.85 * effective_cap:
             spend = budget
         else:
@@ -220,7 +254,6 @@ class World:
         fat_cfg = self.config["fatigue"]
         fatigue_rate = float(c["fatigue_rate"])
         fatigue_mult = math.exp(-fatigue_rate * age)
-        sat_mult = _hill_saturation(spend, self.config["saturation"])
 
         # Impressions & clicks
         cpm_spend_bump = 1.0 + 0.03 * max(0.0, spend - 100.0) / 100.0
@@ -233,9 +266,8 @@ class World:
         ctr_drawn = min(0.35, ctr_mean * _lognormal_centered(self.rng, float(noise_cfg["ctr_lognormal_sd"])))
         clicks = int(self.rng.binomial(impressions, ctr_drawn))
 
-        # Expected conversions scaled to achieve expected ROAS = true_base_roas * sat_mult * fatigue_mult
-        expected_roas = float(c["true_base_roas"]) * sat_mult * fatigue_mult
-        expected_rev = spend * expected_roas
+        # Expected conversions derived from the shared deterministic expected_revenue()
+        expected_rev = expected_revenue(spend, age, day, c, self.config)
         base_aov = float(c["base_aov"])
         expected_purchases = expected_rev / max(1.0, base_aov)
         expected_clicks = max(0.5, impressions * ctr_mean)

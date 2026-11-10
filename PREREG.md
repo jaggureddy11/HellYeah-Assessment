@@ -150,3 +150,18 @@ All statistics below are directly from [analysis/out/part1_q1_q2_q3_q7.txt](anal
    - `Clairvoyant ($5 step)`: `$148,048.96 [95% CI: $145,799.16, $150,179.56]` revenue (`$58,564.18` spend), giving `+38.36% [95% CI: +35.81%, +40.85%]` headroom over `B1`.
 2. **Why B2 loses to B1:** Concentrating 75% of the `$2,000/day` budget (`$300/day` each) on just 5 creatives hits per-creative and soft delivery caps (total spend `$47.6k` vs `$58.6k` for `B1` and `Clairvoyant`, wasting `~$10.9k` of budget) as well as Hill saturation, while chasing noisy lagged 7-day estimates.
 3. **Clairvoyant scope note:** The `Clairvoyant` oracle is myopic per day (maximizing single-day expected revenue in `$5` increments without dynamic multi-day fatigue planning), so it is a practical upper bound rather than an exact 30-day dynamic optimum.
+
+---
+
+## Entry 5 — 2026-11-11 05:20:14 IST (+0530)
+
+### Headline result before ablations (default `sim/world_config.json`, 20 seeds)
+- `Policy (policy.py)`: `$132,283.22 [95% CI: $130,226.51, $134,281.58]` revenue (`$58,475.42` spend).
+- `(yours - B1) / (clairvoyant - B1) = +0.6248 [95% CI: +0.5519, +0.6986]`.
+
+### Pre-registered falsification & ablation checks (written before running experiments)
+1. **Lag correction off (`lag_correction=false`):** If turning lag correction off does not lower the headline `(yours - B1) / (clairvoyant - B1)` outside the default 95% CI, I will remove lag correction as unneeded complexity. If it helps in the default world, then in a slower-lag world (completion shifted ~3 days later) the online-learned lag curve must still keep the policy above `B1`; otherwise online lag learning does not work and I will fix or drop it.
+2. **Format prior off (`format_prior=false`):** If `format_prior=true` does not help when new creatives have format-linked quality, I will drop it. Conversely, in a world where `format` carries no signal, `format_prior=true` must not underperform `format_prior=false` by more than the 95% interval; otherwise I will weaken the format prior.
+3. **Recency decay off (`recency_decay=false`), curvature off (`curvature=false`), exploration off (`exploration=false`):** Each component must measurably change the headline metric or I will remove it.
+4. **Shifted worlds:** The policy must beat `B1` with a 95% CI strictly above zero in every shifted world tested: (a) longer lag (~3 days slower), (b) faster fatigue, (c) reshuffled / zero-signal format quality, (d) noisier outcomes, and (e) different saturation shape. If it fails in any shifted world, I will report the failure honestly and either fix it or state it explicitly as a limitation.
+5. **Myopic clairvoyant check:** Because `Clairvoyant` is myopic per day (maximizing single-day expected revenue without future fatigue planning), `yours / clairvoyant` is not a true dynamic ceiling; I will test/document whether a non-myopic or lookahead policy / ceiling note applies.

@@ -122,3 +122,12 @@ All statistics below are directly from [analysis/out/part1_q1_q2_q3_q7.txt](anal
 - **Pending verification:** Bit-for-bit SHA-256 determinism check of the second run of `analysis/explore.py` is currently completing in the background (all numbers above were read from the completed `analysis/out/part1_q1_q2_q3_q7.txt` and `analysis/out/part2_q4_q5_q6_q8.txt` reports).
 - **Pending deliverables:** `pyproject.toml`, `policy.py`, `sim/` + `world_config.json`, B1/B2/Clairvoyant implementations, falsification & ablation runs, `tests/`, `README.md` (<= 400 words), and final `./interview submit`.
 
+
+---
+
+## Entry 2 — 2026-11-11 04:47:35 IST (+0530)
+
+1. **Pre-registration timing:** The first `PREREG.md` commit (`239972a`) landed at `04:44 IST`, about 12 minutes after the 0:30 mark, so it was late.
+2. **Competitor CPM caveat:** The `same_hook` CPM finding (`+$1.574` in `prev_1_3d`) uses `235` exposure rows generated from only `22` competitor launches, treats days/launches as independent across creatives, ignores CPM drift over time, and has not been checked with a placebo/permutation test; therefore I will not build the policy on it.
+3. **Diminishing-returns endogeneity caveat:** The estimated diminishing-returns slope (`-0.349` ROAS per `+$100` spend, age-adjusted) comes from observational budgets chosen by the buyer, which may have reacted to unobserved performance or pacing changes; therefore the policy will use a shrunk curvature penalty plus a hard per-creative budget cap rather than plugging in the point estimate directly.
+4. **Pending reproducibility check:** The second run of `analysis/explore.py` was cancelled before completion, so bit-for-bit reproducibility of `analysis/out/` is not yet verified.

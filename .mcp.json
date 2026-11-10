@@ -1,12 +1,12 @@
 {
   "mcpServers": {
     "interview-panel": {
-      "command": "python3",
+      "command": "/usr/local/bin/python3",
       "args": [
-        "${CLAUDE_PROJECT_DIR}/.interview/ivkit/panel_mcp.py"
+        "/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/panel_mcp.py"
       ],
       "env": {
-        "INTERVIEW_REPO": "${CLAUDE_PROJECT_DIR}"
+        "INTERVIEW_REPO": "/Users/apple/Documents/Hellyeah/interview"
       }
     }
   }

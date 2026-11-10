@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool codex session_start || true",
+            "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool codex session_start || true",
             "timeout": 5
           }
         ]
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool codex user_prompt || true",
+            "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool codex user_prompt || true",
             "timeout": 5
           }
         ]
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool codex tool_use || true",
+            "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool codex tool_use || true",
             "timeout": 5
           }
         ]
@@ -40,7 +40,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool codex tool_result || true",
+            "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool codex tool_result || true",
             "timeout": 5
           }
         ]
@@ -51,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool codex stop || true",
+            "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool codex stop || true",
             "timeout": 5
           }
         ]
@@ -62,7 +62,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool codex session_end || true",
+            "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool codex session_end || true",
             "timeout": 3
           }
         ]

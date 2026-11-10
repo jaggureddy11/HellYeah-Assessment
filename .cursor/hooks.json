@@ -3,55 +3,55 @@
   "hooks": {
     "sessionStart": [
       {
-        "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool cursor session_start || true",
+        "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool cursor session_start || true",
         "timeout": 5
       }
     ],
     "beforeSubmitPrompt": [
       {
-        "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool cursor user_prompt || true",
+        "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool cursor user_prompt || true",
         "timeout": 5
       }
     ],
     "preToolUse": [
       {
-        "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool cursor tool_use || true",
+        "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool cursor tool_use || true",
         "timeout": 5
       }
     ],
     "postToolUse": [
       {
-        "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool cursor tool_result || true",
+        "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool cursor tool_result || true",
         "timeout": 5
       }
     ],
     "afterFileEdit": [
       {
-        "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool cursor file_edit || true",
+        "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool cursor file_edit || true",
         "timeout": 5
       }
     ],
     "beforeShellExecution": [
       {
-        "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool cursor tool_use || true",
+        "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool cursor tool_use || true",
         "timeout": 5
       }
     ],
     "afterShellExecution": [
       {
-        "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool cursor tool_result || true",
+        "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool cursor tool_result || true",
         "timeout": 5
       }
     ],
     "afterTabFileEdit": [
       {
-        "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool cursor tab_edit || true",
+        "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool cursor tab_edit || true",
         "timeout": 5
       }
     ],
     "stop": [
       {
-        "command": "\"python3\" \".interview/ivkit/hook_log.py\" --tool cursor stop || true",
+        "command": "\"/usr/local/bin/python3\" \"/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py\" --tool cursor stop || true",
         "timeout": 5
       }
     ]

@@ -1,9 +1,10 @@
 # Panel for this session. `interview setup` rewrites the paths for this machine.
 [mcp_servers.interview-panel]
-command = 'python3'
-args = ['.interview/ivkit/panel_mcp.py']
+command = '/usr/local/bin/python3'
+args = ['/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/panel_mcp.py']
+cwd = '/Users/apple/Documents/Hellyeah/interview'
 startup_timeout_sec = 20
 default_tools_approval_mode = "approve"
 
 [mcp_servers.interview-panel.env]
-INTERVIEW_REPO = '.'
+INTERVIEW_REPO = '/Users/apple/Documents/Hellyeah/interview'

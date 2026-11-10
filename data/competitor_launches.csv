@@ -1,0 +1,23 @@
+day,competitor,platform,format,hook_type,primary_text
+5,BRAND_E,meta,story,curiosity,"We formulated this over three years with a dermatology lab in Portland, testing every batch for irritation before it ships, and we still run the same panel on every production run today because reformulating is easier than apologising."
+9,BRAND_E,youtube,story,benefit_led,Thousands of customers use it morning and night. Full routine in under two minutes.
+12,BRAND_B,youtube,story,curiosity,"Start with the serum, add the cream at night. Most people see texture change around week four."
+13,BRAND_E,youtube,video_15s,curiosity,"Start with the serum, add the cream at night. Most people see texture change around week four."
+14,BRAND_A,google,story,curiosity,"Clinically tested on sensitive skin. Fragrance-free, non-comedogenic, and made in small batches."
+20,BRAND_A,google,video_15s,problem_solution,"We formulated this over three years with a dermatology lab in Portland, testing every batch for irritation before it ships, and we still run the same panel on every production run today because reformulating is easier than apologising."
+24,BRAND_D,meta,video_15s,problem_solution,Thousands of customers use it morning and night. Full routine in under two minutes.
+26,BRAND_C,meta,carousel,social_proof,Thousands of customers use it morning and night. Full routine in under two minutes.
+28,BRAND_D,meta,video_30s,problem_solution,Thousands of customers use it morning and night. Full routine in under two minutes.
+29,BRAND_C,meta,video_30s,benefit_led,Thousands of customers use it morning and night. Full routine in under two minutes.
+34,BRAND_B,youtube,video_30s,ugc_testimonial,"Clinically tested on sensitive skin. Fragrance-free, non-comedogenic, and made in small batches."
+35,BRAND_E,meta,carousel,ugc_testimonial,"No fillers, no fragrance, no guesswork. Just the actives your barrier actually uses."
+38,BRAND_D,meta,story,founder_story,"We formulated this over three years with a dermatology lab in Portland, testing every batch for irritation before it ships, and we still run the same panel on every production run today because reformulating is easier than apologising."
+39,BRAND_D,meta,static_image,founder_story,Thousands of customers use it morning and night. Full routine in under two minutes.
+40,BRAND_E,youtube,static_image,founder_story,"We formulated this over three years with a dermatology lab in Portland, testing every batch for irritation before it ships, and we still run the same panel on every production run today because reformulating is easier than apologising."
+41,BRAND_A,youtube,video_15s,founder_story,"Clinically tested on sensitive skin. Fragrance-free, non-comedogenic, and made in small batches."
+42,BRAND_D,google,video_15s,curiosity,A lightweight daily formula built around ceramides and niacinamide. Free shipping over $40.
+46,BRAND_F,meta,carousel,social_proof,"Clinically tested on sensitive skin. Fragrance-free, non-comedogenic, and made in small batches."
+47,BRAND_C,meta,carousel,urgency,"We formulated this over three years with a dermatology lab in Portland, testing every batch for irritation before it ships, and we still run the same panel on every production run today because reformulating is easier than apologising."
+50,BRAND_B,tiktok,carousel,ugc_testimonial,A lightweight daily formula built around ceramides and niacinamide. Free shipping over $40.
+51,BRAND_F,google,video_15s,social_proof,A lightweight daily formula built around ceramides and niacinamide. Free shipping over $40.
+52,BRAND_A,youtube,carousel,social_proof,"No fillers, no fragrance, no guesswork. Just the actives your barrier actually uses."

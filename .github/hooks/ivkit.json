@@ -4,40 +4,40 @@
     "SessionStart": [
       {
         "type": "command",
-        "command": "python3 .interview/ivkit/hook_log.py --tool copilot session_start || true",
-        "windows": "& 'python3' '.interview/ivkit/hook_log.py' --tool copilot session_start; exit 0",
+        "command": "/usr/local/bin/python3 /Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py --tool copilot session_start || true",
+        "windows": "& '/usr/local/bin/python3' '/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py' --tool copilot session_start; exit 0",
         "timeout": 5
       }
     ],
     "UserPromptSubmit": [
       {
         "type": "command",
-        "command": "python3 .interview/ivkit/hook_log.py --tool copilot user_prompt || true",
-        "windows": "& 'python3' '.interview/ivkit/hook_log.py' --tool copilot user_prompt; exit 0",
+        "command": "/usr/local/bin/python3 /Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py --tool copilot user_prompt || true",
+        "windows": "& '/usr/local/bin/python3' '/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py' --tool copilot user_prompt; exit 0",
         "timeout": 5
       }
     ],
     "PreToolUse": [
       {
         "type": "command",
-        "command": "python3 .interview/ivkit/hook_log.py --tool copilot tool_use || true",
-        "windows": "& 'python3' '.interview/ivkit/hook_log.py' --tool copilot tool_use; exit 0",
+        "command": "/usr/local/bin/python3 /Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py --tool copilot tool_use || true",
+        "windows": "& '/usr/local/bin/python3' '/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py' --tool copilot tool_use; exit 0",
         "timeout": 5
       }
     ],
     "PostToolUse": [
       {
         "type": "command",
-        "command": "python3 .interview/ivkit/hook_log.py --tool copilot tool_result || true",
-        "windows": "& 'python3' '.interview/ivkit/hook_log.py' --tool copilot tool_result; exit 0",
+        "command": "/usr/local/bin/python3 /Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py --tool copilot tool_result || true",
+        "windows": "& '/usr/local/bin/python3' '/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py' --tool copilot tool_result; exit 0",
         "timeout": 5
       }
     ],
     "Stop": [
       {
         "type": "command",
-        "command": "python3 .interview/ivkit/hook_log.py --tool copilot stop || true",
-        "windows": "& 'python3' '.interview/ivkit/hook_log.py' --tool copilot stop; exit 0",
+        "command": "/usr/local/bin/python3 /Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py --tool copilot stop || true",
+        "windows": "& '/usr/local/bin/python3' '/Users/apple/Documents/Hellyeah/interview/.interview/ivkit/hook_log.py' --tool copilot stop; exit 0",
         "timeout": 5
       }
     ]

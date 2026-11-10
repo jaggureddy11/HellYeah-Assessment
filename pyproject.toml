@@ -1,0 +1,21 @@
+[project]
+name = "creative-rotation-brain"
+version = "0.1.0"
+description = "Daily budget allocation policy for Creative Rotation Brain"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+

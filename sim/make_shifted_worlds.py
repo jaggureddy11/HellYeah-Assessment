@@ -124,6 +124,26 @@ def build_shifted_worlds(base_cfg: dict[str, Any]) -> dict[str, dict[str, Any]]:
     )
     worlds["big_outage"] = w_out
 
+    # 8. strong_new_creatives: 10 unserved creatives have ~30% higher true_base_roas
+    w_strong_new = copy.deepcopy(base_cfg)
+    for c in w_strong_new["creatives"]:
+        if c.get("launch_day") is None:
+            c["true_base_roas"] = round(float(np.clip(float(c["true_base_roas"]) * 1.30, 0.35, 6.5)), 4)
+    w_strong_new["shift_note"] = (
+        "strong_new_creatives: multiplied true_base_roas by 1.30 (+30%) for all 10 unserved creatives (launch_day is null)."
+    )
+    worlds["strong_new_creatives"] = w_strong_new
+
+    # 9. weak_new_creatives: 10 unserved creatives have ~30% lower true_base_roas
+    w_weak_new = copy.deepcopy(base_cfg)
+    for c in w_weak_new["creatives"]:
+        if c.get("launch_day") is None:
+            c["true_base_roas"] = round(float(np.clip(float(c["true_base_roas"]) * 0.70, 0.25, 5.5)), 4)
+    w_weak_new["shift_note"] = (
+        "weak_new_creatives: multiplied true_base_roas by 0.70 (-30%) for all 10 unserved creatives (launch_day is null)."
+    )
+    worlds["weak_new_creatives"] = w_weak_new
+
     return worlds
 
 

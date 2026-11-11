@@ -207,3 +207,13 @@ All statistics below are directly from [analysis/out/part1_q1_q2_q3_q7.txt](anal
 - **Worlds (6):** `default`, `format_no_signal`, `fast_fatigue`, `format_reshuffled`, `strong_new_creatives`, `weak_new_creatives`.
 - **Fresh seeds:** `4000..4019` (`20` paired seeds).
 - **Selection rule:** Prefer a variant that beats `B1` with a 95% CI strictly above `0` in **all 6 worlds**; among passing variants, pick the one with the highest `default`-world headline `(yours - B1) / (clairvoyant - B1)`. If no variant passes all 6 worlds, pick the variant with the highest worst-world mean headline and document any remaining failure as a limitation in `README.md`.
+
+---
+
+## Entry 9 — 2026-11-11 06:11:09 IST (+0530)
+
+1. **Entry 8 selection (`V1`):** The Entry 8 rule selected `V1` (`recency_decay=True`, 12-day half-life, `uniform_mix=0.0`, `cold_start_floor=False`, `thompson=False`) because it was the only variant with a 95% CI strictly above `B1` in all six worlds on seeds `4000..4019` (`default`: `+0.7962 [+0.7399, +0.8581]`; `format_no_signal`: `+0.1752 [+0.1298, +0.2182]`; `format_reshuffled`: `+0.2345 [+0.1823, +0.2840]`).
+2. **Reversal of Entry 6 decision:** Turning `recency_decay` back on reverses my Entry 6 decision to turn it off, which was made looking at the `default` world only. Keeping `recency_decay=True` costs about `0.05` of the clairvoyant gap in the `default` world (`V0` `+0.8485` vs `V1` `+0.7962`), which is worth paying for robustness under non-stationary regime shifts.
+3. **Rejection of `V2`:** `V2` (`uniform_mix=0.25`) failed `format_no_signal` (`-0.0316 [-0.0818, +0.0219]`) and cost about `0.25` in the `default` world (`+0.5964` vs `+0.8485`), so it is rejected.
+4. **Seed-batch variation caveat:** The bootstrap intervals are conditional on a single 20-seed batch and understate variation across independent seed batches (for example, `V0` on `format_no_signal` scored `-0.0564` on seeds `3000..3019` vs `-0.2194` on seeds `4000..4019`).
+5. **Fresh final confirmation seeds (`5000..5019`):** Because `V1` was selected on seeds `4000..4019`, the final quoted headline numbers will come exclusively from fresh seeds `5000..5019` across all ten worlds, with no further changes to `policy.py` after seeing those results.

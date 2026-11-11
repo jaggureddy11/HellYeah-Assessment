@@ -1,0 +1,12 @@
+=== Evaluation (days 61-90, n_seeds=20, config=sim/worlds/strong_new_creatives.json, policy_opts=defaults) ===
+Policy                   | Revenue mean [95% CI] ($)          | Spend mean [95% CI] ($)         
+------------------------------------------------------------------------------------------------
+B1 Uniform               | 114,256.29 [113,074.78, 115,269.40] | 58,571.70 [58,550.97, 58,592.94]
+B2 Windowed Greedy       | 92,981.25 [91,251.57, 94,796.55]   | 47,671.02 [47,276.53, 48,104.20]
+Clairvoyant ($5 step)    | 165,189.57 [163,461.42, 167,016.96] | 58,532.31 [58,502.25, 58,562.23]
+Policy (policy.py)       | 151,662.89 [149,148.45, 154,165.13] | 58,403.43 [58,365.05, 58,444.19]
+
+Paired per-seed summary (bootstrapped across seeds):
+  (yours - B1) / (clairvoyant - B1): +0.7375 [95% CI: +0.6826, +0.7910]
+  (B2    - B1) / (clairvoyant - B1): -0.4209 [95% CI: -0.4646, -0.3756]
+  Clairvoyant gain over B1 (%)     : +44.62% [95% CI: +43.02%, +46.32%]

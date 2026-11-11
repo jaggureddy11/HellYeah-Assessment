@@ -1,0 +1,12 @@
+=== Evaluation (days 61-90, n_seeds=20, config=sim/worlds/weak_new_creatives.json, policy_opts={"recency_decay": true}) ===
+Policy                   | Revenue mean [95% CI] ($)          | Spend mean [95% CI] ($)         
+------------------------------------------------------------------------------------------------
+B1 Uniform               | 98,158.34 [96,914.96, 99,407.16]   | 58,568.20 [58,546.52, 58,592.08]
+B2 Windowed Greedy       | 77,269.90 [75,520.46, 78,961.09]   | 48,562.54 [48,078.68, 49,048.52]
+Clairvoyant ($5 step)    | 134,592.17 [132,499.73, 136,559.49] | 58,516.70 [58,476.46, 58,556.45]
+Policy (policy.py)       | 129,125.02 [127,193.45, 130,962.55] | 58,469.29 [58,437.42, 58,499.30]
+
+Paired per-seed summary (bootstrapped across seeds):
+  (yours - B1) / (clairvoyant - B1): +0.8647 [95% CI: +0.7791, +0.9509]
+  (B2    - B1) / (clairvoyant - B1): -0.5924 [95% CI: -0.6793, -0.5077]
+  Clairvoyant gain over B1 (%)     : +37.18% [95% CI: +34.94%, +39.26%]

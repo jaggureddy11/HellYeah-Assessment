@@ -1,0 +1,12 @@
+=== Evaluation (days 61-90, n_seeds=20, config=sim/worlds/format_reshuffled.json, policy_opts=defaults) ===
+Policy                   | Revenue mean [95% CI] ($)          | Spend mean [95% CI] ($)         
+------------------------------------------------------------------------------------------------
+B1 Uniform               | 105,977.52 [103,994.41, 107,833.39] | 58,547.72 [58,527.49, 58,569.06]
+B2 Windowed Greedy       | 81,403.22 [79,648.32, 83,251.34]   | 49,074.32 [48,715.24, 49,460.24]
+Clairvoyant ($5 step)    | 145,291.62 [143,381.83, 147,312.61] | 58,574.64 [58,532.62, 58,614.12]
+Policy (policy.py)       | 118,445.88 [116,570.37, 120,321.41] | 58,464.19 [58,427.90, 58,500.91]
+
+Paired per-seed summary (bootstrapped across seeds):
+  (yours - B1) / (clairvoyant - B1): +0.3099 [95% CI: +0.2490, +0.3701]
+  (B2    - B1) / (clairvoyant - B1): -0.6455 [95% CI: -0.7245, -0.5651]
+  Clairvoyant gain over B1 (%)     : +37.28% [95% CI: +34.62%, +40.24%]

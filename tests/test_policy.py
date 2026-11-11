@@ -85,13 +85,27 @@ def test_lag_correction_raises_recent_under_reported_day() -> None:
         creatives,
         200.0,
         seed=1,
-        options={"lag_correction": True, "exploration": False, "recency_decay": False, "max_share": 0.8, "log_stderr": False},
+        options={
+            "lag_correction": True,
+            "cold_start_floor": False,
+            "thompson": False,
+            "recency_decay": False,
+            "max_share": 0.8,
+            "log_stderr": False,
+        },
     )
     pol_nolag = Policy(
         creatives,
         200.0,
         seed=1,
-        options={"lag_correction": False, "exploration": False, "recency_decay": False, "max_share": 0.8, "log_stderr": False},
+        options={
+            "lag_correction": False,
+            "cold_start_floor": False,
+            "thompson": False,
+            "recency_decay": False,
+            "max_share": 0.8,
+            "log_stderr": False,
+        },
     )
 
     s_lag = pol_lag.allocate(61, history)
@@ -114,7 +128,13 @@ def test_cold_start_creative_uses_format_prior() -> None:
         creatives,
         200.0,
         seed=1,
-        options={"format_prior": True, "exploration": False, "max_share": 0.8, "log_stderr": False},
+        options={
+            "format_prior": True,
+            "cold_start_floor": False,
+            "thompson": False,
+            "max_share": 0.8,
+            "log_stderr": False,
+        },
     )
     shares = pol.allocate(61, history=[])
     expl = pol.explain(61)
@@ -123,6 +143,27 @@ def test_cold_start_creative_uses_format_prior() -> None:
     assert expl["C_STATIC"]["prior_source"] == "format"
     assert expl["C_STORY"]["prior_roas"] > expl["C_STATIC"]["prior_roas"]
     assert shares["C_STORY"] > shares["C_STATIC"]
+
+
+def test_split_exploration_options_and_recency_default() -> None:
+    creatives = [{"creative_id": f"C{i}", "format": "story"} for i in range(10)]
+    pol_def = Policy(creatives, 2000.0, seed=5, options={"log_stderr": False})
+    assert pol_def.options["recency_decay"] is False
+    assert pol_def.options["cold_start_floor"] is False
+    assert pol_def.options["thompson"] is False
+
+    # With cold_start_floor=True and thompson=False, sampled_roas equals estimated_roas
+    # and unserved creatives receive cold_start_test mode.
+    pol_floor_only = Policy(
+        creatives,
+        2000.0,
+        seed=5,
+        options={"cold_start_floor": True, "thompson": False, "log_stderr": False},
+    )
+    pol_floor_only.allocate(61, history=[])
+    expl = pol_floor_only.explain(61)
+    assert all(v["sampled_roas"] == v["estimated_roas"] for v in expl.values())
+    assert any(v["mode"] == "cold_start_test" for v in expl.values())
 
 
 def test_policy_never_reads_or_imports_sim(monkeypatch: pytest.MonkeyPatch) -> None:

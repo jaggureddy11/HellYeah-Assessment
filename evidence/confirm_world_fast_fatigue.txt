@@ -1,0 +1,12 @@
+=== Evaluation (days 61-90, n_seeds=20, config=sim/worlds/fast_fatigue.json, policy_opts=defaults) ===
+Policy                   | Revenue mean [95% CI] ($)          | Spend mean [95% CI] ($)         
+------------------------------------------------------------------------------------------------
+B1 Uniform               | 80,683.54 [79,416.35, 82,059.45]   | 58,560.30 [58,537.92, 58,581.00]
+B2 Windowed Greedy       | 64,492.06 [63,363.66, 65,690.35]   | 48,010.58 [47,623.64, 48,373.95]
+Clairvoyant ($5 step)    | 118,871.90 [116,815.89, 120,778.29] | 58,554.78 [58,512.29, 58,600.01]
+Policy (policy.py)       | 104,930.16 [103,132.50, 106,833.23] | 58,482.42 [58,443.25, 58,520.16]
+
+Paired per-seed summary (bootstrapped across seeds):
+  (yours - B1) / (clairvoyant - B1): +0.6423 [95% CI: +0.5864, +0.7059]
+  (B2    - B1) / (clairvoyant - B1): -0.4376 [95% CI: -0.5070, -0.3730]
+  Clairvoyant gain over B1 (%)     : +47.51% [95% CI: +44.36%, +50.61%]

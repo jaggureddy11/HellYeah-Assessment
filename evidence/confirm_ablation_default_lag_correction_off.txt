@@ -1,0 +1,14 @@
+=== Evaluation (days 61-90, n_seeds=20, config=sim/world_config.json, policy_opts={"lag_correction": false}) ===
+Policy                   | Revenue mean [95% CI] ($)          | Spend mean [95% CI] ($)         
+------------------------------------------------------------------------------------------------
+B1 Uniform               | 106,066.87 [104,819.37, 107,460.54] | 58,569.20 [58,539.49, 58,596.72]
+B2 Windowed Greedy       | 82,949.75 [81,031.26, 85,066.47]   | 47,333.05 [46,951.87, 47,742.18]
+Clairvoyant ($5 step)    | 147,361.57 [145,462.09, 149,314.99] | 58,540.02 [58,497.09, 58,586.25]
+Policy (policy.py)       | 137,229.86 [135,035.27, 139,402.76] | 58,512.76 [58,466.09, 58,550.94]
+
+Paired per-seed summary (bootstrapped across seeds):
+  (yours - B1) / (clairvoyant - B1): +0.7596 [95% CI: +0.7063, +0.8129]
+  (B2    - B1) / (clairvoyant - B1): -0.5669 [95% CI: -0.6317, -0.5027]
+  Clairvoyant gain over B1 (%)     : +39.03% [95% CI: +36.64%, +41.42%]
+
+Paired delta (default ON - lag_correction_off) in normalized score: +0.0200 [-0.0257, +0.0644]

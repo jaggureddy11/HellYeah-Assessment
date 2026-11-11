@@ -1,0 +1,14 @@
+=== Evaluation (days 61-90, n_seeds=20, config=sim/worlds/strong_new_creatives.json, policy_opts={"cold_start_floor": false}) ===
+Policy                   | Revenue mean [95% CI] ($)          | Spend mean [95% CI] ($)         
+------------------------------------------------------------------------------------------------
+B1 Uniform               | 113,706.24 [112,462.54, 114,905.43] | 58,554.12 [58,527.54, 58,579.07]
+B2 Windowed Greedy       | 94,345.40 [92,970.23, 95,802.68]   | 47,124.74 [46,686.38, 47,554.20]
+Clairvoyant ($5 step)    | 164,199.20 [162,506.57, 165,843.81] | 58,566.55 [58,530.50, 58,601.89]
+Policy (policy.py)       | 150,639.98 [148,261.26, 152,846.85] | 58,424.73 [58,387.25, 58,467.57]
+
+Paired per-seed summary (bootstrapped across seeds):
+  (yours - B1) / (clairvoyant - B1): +0.7383 [95% CI: +0.6866, +0.7909]
+  (B2    - B1) / (clairvoyant - B1): -0.3893 [95% CI: -0.4344, -0.3401]
+  Clairvoyant gain over B1 (%)     : +44.47% [95% CI: +42.61%, +46.43%]
+
+Paired delta (default ON - cold_start_floor_off) in normalized score: -0.0057 [-0.0604, +0.0555]

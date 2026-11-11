@@ -42,9 +42,10 @@ FALLBACK_PRIORS: dict[str, Any] = {
 DEFAULT_OPTIONS: dict[str, Any] = {
     "lag_correction": True,
     "format_prior": True,
-    "recency_decay": True,
+    "recency_decay": False,
     "curvature": True,
-    "exploration": True,
+    "cold_start_floor": False,
+    "thompson": False,
     "half_life_days": 12.0,
     "prior_pseudo_spend": 180.0,
     "lag_completion_floor": 0.25,
@@ -385,7 +386,8 @@ class Policy:
         # Empirical-Bayes posterior + Thompson sampling seeded strictly by (seed, day)
         pseudo_spend = float(self.options.get("prior_pseudo_spend", 180.0))
         format_on = bool(self.options.get("format_prior", True))
-        explore_on = bool(self.options.get("exploration", True))
+        thompson_on = bool(self.options.get("thompson", True))
+        cold_floor_on = bool(self.options.get("cold_start_floor", True))
         explore_scale = float(self.options.get("explore_scale", 0.65))
         obs_var_per_dollar = float(self.options.get("obs_var_per_dollar", 200.0))
         prior_sd = float(self.options.get("prior_roas_sd", 0.75))
@@ -413,7 +415,7 @@ class Policy:
             post_mean = (wr + pseudo_spend * p_roas) / (ws + pseudo_spend)
             post_sd = math.sqrt(1.0 / (1.0 / (prior_sd * prior_sd) + ws / obs_var_per_dollar))
             z = float(day_rng.standard_normal())
-            ts_roas = max(0.05, post_mean + explore_scale * post_sd * z) if explore_on else max(0.05, post_mean)
+            ts_roas = max(0.05, post_mean + explore_scale * post_sd * z) if thompson_on else max(0.05, post_mean)
 
             mu_roas[cid] = post_mean
             sampled_roas[cid] = ts_roas
@@ -431,7 +433,7 @@ class Policy:
         alloc: dict[str, float] = {cid: 0.0 for cid in self.creative_ids}
         is_cold_start: dict[str, bool] = {}
 
-        if explore_on and cold_days > 0 and cold_dollars >= 1.0:
+        if cold_floor_on and cold_days > 0 and cold_dollars >= 1.0:
             cold_cids = [cid for cid in sorted(self.creative_ids) if days_with_spend[cid] < cold_days]
             max_cold_pool = 0.35 * self.daily_budget
             per_cold = (
@@ -522,7 +524,7 @@ class Policy:
                 mode = "zero"
             elif is_cold_start[cid]:
                 mode = "cold_start_test"
-            elif explore_on and sampled_roas[cid] > mu_roas[cid] * 1.05:
+            elif thompson_on and sampled_roas[cid] > mu_roas[cid] * 1.05:
                 mode = "explore"
             else:
                 mode = "exploit"

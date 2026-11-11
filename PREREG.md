@@ -165,3 +165,23 @@ All statistics below are directly from [analysis/out/part1_q1_q2_q3_q7.txt](anal
 3. **Recency decay off (`recency_decay=false`), curvature off (`curvature=false`), exploration off (`exploration=false`):** Each component must measurably change the headline metric or I will remove it.
 4. **Shifted worlds:** The policy must beat `B1` with a 95% CI strictly above zero in every shifted world tested: (a) longer lag (~3 days slower), (b) faster fatigue, (c) reshuffled / zero-signal format quality, (d) noisier outcomes, and (e) different saturation shape. If it fails in any shifted world, I will report the failure honestly and either fix it or state it explicitly as a limitation.
 5. **Myopic clairvoyant check:** Because `Clairvoyant` is myopic per day (maximizing single-day expected revenue without future fatigue planning), `yours / clairvoyant` is not a true dynamic ceiling; I will test/document whether a non-myopic or lookahead policy / ceiling note applies.
+
+---
+
+## Entry 6 — 2026-11-11 05:42:33 IST (+0530)
+
+### (a) What the ablations showed (honest interpretation of `evidence/summary.md`)
+- **`recency_decay` and `exploration` hurt performance when ON:** On the default world (`n = 15` seeds `1000..1014`), paired `(ON - OFF)` deltas were `-0.1708 [-0.2703, -0.0578]` for `recency_decay` and `-0.2025 [-0.2971, -0.1176]` for `exploration`. The summary script's `PASS` label for those two rows (based solely on `dlo > 0 or dhi < 0`) was wrong: those components made the policy significantly **worse**, so they are **failures** (`FAIL (harmful)`).
+- **`lag_correction` and `format_prior` were positive but inconclusive:** On the default world, paired `(ON - OFF)` deltas were `+0.0671 [-0.0135, +0.1541]` for `lag_correction` and `+0.0633 [-0.0477, +0.1697]` for `format_prior`. Strictly applying Entry 5's rule would remove them; however, I am keeping both as an explicit recorded deviation because the 15-seed test is underpowered, the point estimates are positive (not negative), and their complexity/runtime cost is small.
+
+### (b) Decisions made before running any new experiments
+- **`recency_decay` will default to `False` (`off`):** With 88% within-creative daily variance in the data, a 12-day half-life discards too much signal over a 30-day window (and did not help even in `fast_fatigue`, `-0.0726 [-0.1554, +0.0084]`).
+- **`exploration` will be split into two independent switches:** (1) a `cold_start_floor` for unserved creatives, and (2) `thompson_sampling` from the posterior, so each can be tested separately rather than confounded in one flag.
+
+### (c) Pre-registered selection rule for the split cold-start/exploration variants
+- I will keep the **lightest** cold-start/exploration variant that satisfies BOTH:
+  1. Not worse than `"both off"` (`cold_start_floor=false`, `thompson_sampling=false`) by more than its paired 95% CI in the `default` world; AND
+  2. Not below `"both off"` in `strong_new_creatives` (a shifted world where the 10 unserved creatives have ~30% higher true base ROAS than the old creatives).
+
+### (d) Fresh evaluation seed protocol
+- Because seeds `1000..1014` were inspected to make the decisions above, the final headline numbers will be reported **only on fresh seeds (`3000` onwards)**.

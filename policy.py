@@ -42,10 +42,11 @@ FALLBACK_PRIORS: dict[str, Any] = {
 DEFAULT_OPTIONS: dict[str, Any] = {
     "lag_correction": True,
     "format_prior": True,
-    "recency_decay": False,
+    "recency_decay": True,
     "curvature": True,
     "cold_start_floor": False,
     "thompson": False,
+    "uniform_mix": 0.0,
     "half_life_days": 12.0,
     "prior_pseudo_spend": 180.0,
     "lag_completion_floor": 0.25,
@@ -493,6 +494,40 @@ class Policy:
                 used = new_s - alloc[best_cid]
                 alloc[best_cid] = new_s
                 remaining -= used
+
+        # Optional uniform floor mix applied BEFORE $1 cleanup and max_share cap
+        raw_mix = _to_finite_nonneg(self.options.get("uniform_mix", 0.0))
+        u_mix = min(1.0, raw_mix) if raw_mix is not None else 0.0
+        if u_mix > 0.0 and self.creative_ids:
+            total_now = sum(alloc.values())
+            uni_dollars = self.daily_budget / len(self.creative_ids)
+            if total_now > 0.0:
+                for cid in self.creative_ids:
+                    pol_dollars = alloc[cid] * (self.daily_budget / total_now)
+                    alloc[cid] = (1.0 - u_mix) * pol_dollars + u_mix * uni_dollars
+            else:
+                for cid in self.creative_ids:
+                    alloc[cid] = uni_dollars
+
+            # Enforce max_share cap if feasible across creative count
+            hard_max = max(25.0, float(self.options.get("max_share", 0.14)) * self.daily_budget)
+            if len(self.creative_ids) * hard_max >= self.daily_budget - 1e-6:
+                for _ in range(3):
+                    excess = 0.0
+                    under_cap: list[str] = []
+                    for cid in self.creative_ids:
+                        if alloc[cid] > hard_max:
+                            excess += alloc[cid] - hard_max
+                            alloc[cid] = hard_max
+                        elif alloc[cid] < hard_max - 1e-9:
+                            under_cap.append(cid)
+                    if excess <= 1e-9 or not under_cap:
+                        break
+                    room_sum = sum(hard_max - alloc[c] for c in under_cap)
+                    if room_sum <= 1e-9:
+                        break
+                    for cid in under_cap:
+                        alloc[cid] += excess * ((hard_max - alloc[cid]) / room_sum)
 
         # Enforce $1 minimum rule: drop any sub-$1 allocations and redistribute cleanly
         for _ in range(3):

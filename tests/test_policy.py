@@ -148,9 +148,10 @@ def test_cold_start_creative_uses_format_prior() -> None:
 def test_split_exploration_options_and_recency_default() -> None:
     creatives = [{"creative_id": f"C{i}", "format": "story"} for i in range(10)]
     pol_def = Policy(creatives, 2000.0, seed=5, options={"log_stderr": False})
-    assert pol_def.options["recency_decay"] is False
+    assert pol_def.options["recency_decay"] is True
     assert pol_def.options["cold_start_floor"] is False
     assert pol_def.options["thompson"] is False
+    assert pol_def.options["uniform_mix"] == 0.0
 
     # With cold_start_floor=True and thompson=False, sampled_roas equals estimated_roas
     # and unserved creatives receive cold_start_test mode.
@@ -164,6 +165,26 @@ def test_split_exploration_options_and_recency_default() -> None:
     expl = pol_floor_only.explain(61)
     assert all(v["sampled_roas"] == v["estimated_roas"] for v in expl.values())
     assert any(v["mode"] == "cold_start_test" for v in expl.values())
+
+
+def test_uniform_mix_floor_sum_and_bad_input_safety() -> None:
+    creatives = _load_creatives()
+    n = len(creatives)
+    assert n == 50
+
+    pol = Policy(creatives, 2000.0, seed=7, options={"uniform_mix": 0.25, "log_stderr": False})
+    shares = pol.allocate(61, history=[])
+    assert len(shares) == n
+    assert sum(shares.values()) == pytest.approx(1.0, abs=1e-9)
+    assert all(math.isfinite(v) and v >= 0.25 * (1.0 / n) - 1e-9 for v in shares.values())
+
+    # Bad uniform_mix and garbage history still produce safe normalized shares summing to 1
+    for bad_mix in (-0.5, float("nan"), "oops", 5.0):
+        pol_bad = Policy(creatives, 2000.0, seed=7, options={"uniform_mix": bad_mix, "log_stderr": False})
+        out = pol_bad.allocate(61, history=["garbage", None])  # type: ignore[list-item]
+        assert len(out) == n
+        assert all(math.isfinite(v) and v >= 0.0 for v in out.values())
+        assert sum(out.values()) == pytest.approx(1.0, abs=1e-9)
 
 
 def test_policy_never_reads_or_imports_sim(monkeypatch: pytest.MonkeyPatch) -> None:

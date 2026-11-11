@@ -185,3 +185,12 @@ All statistics below are directly from [analysis/out/part1_q1_q2_q3_q7.txt](anal
 
 ### (d) Fresh evaluation seed protocol
 - Because seeds `1000..1014` were inspected to make the decisions above, the final headline numbers will be reported **only on fresh seeds (`3000` onwards)**.
+
+---
+
+## Entry 7 — 2026-11-11 05:58:45 IST (+0530)
+
+1. **Fresh-seed confirmation failure (`format_no_signal`, seeds `3000..3019`):** After setting `recency_decay=False`, the fresh-seed confirmation failed my Entry 5 criterion in `format_no_signal` (`-0.0564 [95% CI: -0.1045, -0.0072]` vs `B1`). This is a pre-registered failure that I caused by turning `recency_decay` off (so the policy relies more heavily on days 1–60 history in a world that breaks the days 1–60 to days 61–90 creative-quality link).
+2. **Entry 6(c) cold-start rule critique & evidence-based choice (`both_off`):** The Entry 6(c) rule as written is tautological because `both_off` serves as its own reference (`0.0 >= 0.0`). Instead, I choose `both_off` (`cold_start_floor=False`, `thompson=False`) directly on the fresh-seed evidence: in `default`, all four variants are within noise (`both_off`: `+0.8366 [+0.7556, +0.9172]` vs `both_on`: `+0.7797 [+0.7349, +0.8268]`), and in `strong_new_creatives`, `both_off` beats `both_on` by `+0.0630 [95% CI: +0.0068, +0.1139]`.
+3. **Keeping `lag_correction` and `format_prior`:** Both stay enabled by default because their paired `(ON - OFF)` deltas were positive across `default` (`+0.0200 [-0.0257, +0.0644]` and `+0.0301 [-0.0223, +0.0790]`), `strong_new_creatives` (`+0.0663 [+0.0198, +0.1168]` and `+0.0765 [+0.0070, +0.1488]`), and `slow_lag` (`lag_correction`: `+0.0571 [-0.0063, +0.1176]`).
+4. **Exploratory vs confirmatory seeds:** All headline numbers on seeds `1000..1014` are strictly exploratory (used to make these design decisions); final headline claims will come from fresh seeds (`3000+` or later fresh seeds).

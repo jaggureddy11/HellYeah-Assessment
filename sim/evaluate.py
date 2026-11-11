@@ -144,6 +144,37 @@ def evaluate(
     }
 
 
+def format_evaluation_report(res: dict[str, Any]) -> str:
+    lines: list[str] = []
+    opts_str = json.dumps(res["policy_options"]) if res["policy_options"] else "defaults"
+    lines.append(
+        f"=== Evaluation (days 61-90, n_seeds={res['n_seeds']}, config={res['config_path']}, policy_opts={opts_str}) ==="
+    )
+    lines.append(f"{'Policy':<24} | {'Revenue mean [95% CI] ($)':<34} | {'Spend mean [95% CI] ($)':<32}")
+    lines.append("-" * 96)
+    for name in ["B1 Uniform", "B2 Windowed Greedy", "Clairvoyant ($5 step)", "Policy (policy.py)"]:
+        rm, rlo, rhi = bootstrap_mean_ci(res["rev_by_pol"][name], n_boot=res["n_boot"])
+        sm, slo, shi = bootstrap_mean_ci(res["spend_by_pol"][name], n_boot=res["n_boot"])
+        r_str = f"{rm:,.2f} [{rlo:,.2f}, {rhi:,.2f}]"
+        s_str = f"{sm:,.2f} [{slo:,.2f}, {shi:,.2f}]"
+        lines.append(f"{name:<24} | {r_str:<34} | {s_str:<32}")
+
+    ym, ylo, yhi = res["yours_norm_ci"]
+    bm, blo, bhi = res["b2_norm_ci"]
+    gm, glo, ghi = res["cl_gain_pct_ci"]
+    lines.append("\nPaired per-seed summary (bootstrapped across seeds):")
+    lines.append(f"  (yours - B1) / (clairvoyant - B1): {ym:+.4f} [95% CI: {ylo:+.4f}, {yhi:+.4f}]")
+    lines.append(f"  (B2    - B1) / (clairvoyant - B1): {bm:+.4f} [95% CI: {blo:+.4f}, {bhi:+.4f}]")
+    lines.append(f"  Clairvoyant gain over B1 (%)     : {gm:+.2f}% [95% CI: {glo:+.2f}%, {ghi:+.2f}%]")
+
+    if gm < 5.0:
+        lines.append(
+            f"\nWARNING: Clairvoyant gain over B1 is only {gm:.2f}% (< 5%). "
+            "This environment has very little headroom!"
+        )
+    return "\n".join(lines)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Evaluate Policy vs B1, B2, and Clairvoyant.")
     parser.add_argument("--config", default="sim/world_config.json", help="Path to world config JSON.")
@@ -166,31 +197,7 @@ def main() -> None:
         n_boot=args.n_boot,
         policy_options=policy_options,
     )
-
-    opts_str = json.dumps(res["policy_options"]) if res["policy_options"] else "defaults"
-    print(f"=== Evaluation (days 61-90, n_seeds={res['n_seeds']}, config={res['config_path']}, policy_opts={opts_str}) ===")
-    print(f"{'Policy':<24} | {'Revenue mean [95% CI] ($)':<34} | {'Spend mean [95% CI] ($)':<32}")
-    print("-" * 96)
-    for name in ["B1 Uniform", "B2 Windowed Greedy", "Clairvoyant ($5 step)", "Policy (policy.py)"]:
-        rm, rlo, rhi = bootstrap_mean_ci(res["rev_by_pol"][name], n_boot=res["n_boot"])
-        sm, slo, shi = bootstrap_mean_ci(res["spend_by_pol"][name], n_boot=res["n_boot"])
-        r_str = f"{rm:,.2f} [{rlo:,.2f}, {rhi:,.2f}]"
-        s_str = f"{sm:,.2f} [{slo:,.2f}, {shi:,.2f}]"
-        print(f"{name:<24} | {r_str:<34} | {s_str:<32}")
-
-    ym, ylo, yhi = res["yours_norm_ci"]
-    bm, blo, bhi = res["b2_norm_ci"]
-    gm, glo, ghi = res["cl_gain_pct_ci"]
-    print("\nPaired per-seed summary (bootstrapped across seeds):")
-    print(f"  (yours - B1) / (clairvoyant - B1): {ym:+.4f} [95% CI: {ylo:+.4f}, {yhi:+.4f}]")
-    print(f"  (B2    - B1) / (clairvoyant - B1): {bm:+.4f} [95% CI: {blo:+.4f}, {bhi:+.4f}]")
-    print(f"  Clairvoyant gain over B1 (%)     : {gm:+.2f}% [95% CI: {glo:+.2f}%, {ghi:+.2f}%]")
-
-    if gm < 5.0:
-        print(
-            f"\nWARNING: Clairvoyant gain over B1 is only {gm:.2f}% (< 5%). "
-            "This environment has very little headroom!"
-        )
+    print(format_evaluation_report(res))
 
 
 if __name__ == "__main__":

@@ -194,3 +194,16 @@ All statistics below are directly from [analysis/out/part1_q1_q2_q3_q7.txt](anal
 2. **Entry 6(c) cold-start rule critique & evidence-based choice (`both_off`):** The Entry 6(c) rule as written is tautological because `both_off` serves as its own reference (`0.0 >= 0.0`). Instead, I choose `both_off` (`cold_start_floor=False`, `thompson=False`) directly on the fresh-seed evidence: in `default`, all four variants are within noise (`both_off`: `+0.8366 [+0.7556, +0.9172]` vs `both_on`: `+0.7797 [+0.7349, +0.8268]`), and in `strong_new_creatives`, `both_off` beats `both_on` by `+0.0630 [95% CI: +0.0068, +0.1139]`.
 3. **Keeping `lag_correction` and `format_prior`:** Both stay enabled by default because their paired `(ON - OFF)` deltas were positive across `default` (`+0.0200 [-0.0257, +0.0644]` and `+0.0301 [-0.0223, +0.0790]`), `strong_new_creatives` (`+0.0663 [+0.0198, +0.1168]` and `+0.0765 [+0.0070, +0.1488]`), and `slow_lag` (`lag_correction`: `+0.0571 [-0.0063, +0.1176]`).
 4. **Exploratory vs confirmatory seeds:** All headline numbers on seeds `1000..1014` are strictly exploratory (used to make these design decisions); final headline claims will come from fresh seeds (`3000+` or later fresh seeds).
+
+---
+
+## Entry 8 — 2026-11-11 06:01:14 IST (+0530)
+
+### Pre-registered `format_no_signal` robustness test (written before implementation or runs)
+- **Variants tested (all keep `cold_start_floor=False`, `thompson=False`, `lag_correction=True`, `format_prior=True`, `curvature=True`):**
+  - `V0`: Current default (`recency_decay=False`, `uniform_mix=0.0`).
+  - `V1`: `recency_decay=True` (12-day half-life, `uniform_mix=0.0`).
+  - `V2`: `recency_decay=False`, `uniform_mix=0.25` (final shares before `$1` cleanup and max-share cap are `(1 - uniform_mix) * policy_shares + uniform_mix * (1 / N)` across all 50 creatives, summing to `1.0`).
+- **Worlds (6):** `default`, `format_no_signal`, `fast_fatigue`, `format_reshuffled`, `strong_new_creatives`, `weak_new_creatives`.
+- **Fresh seeds:** `4000..4019` (`20` paired seeds).
+- **Selection rule:** Prefer a variant that beats `B1` with a 95% CI strictly above `0` in **all 6 worlds**; among passing variants, pick the one with the highest `default`-world headline `(yours - B1) / (clairvoyant - B1)`. If no variant passes all 6 worlds, pick the variant with the highest worst-world mean headline and document any remaining failure as a limitation in `README.md`.

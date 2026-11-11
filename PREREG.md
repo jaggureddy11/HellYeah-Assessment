@@ -217,3 +217,33 @@ All statistics below are directly from [analysis/out/part1_q1_q2_q3_q7.txt](anal
 3. **Rejection of `V2`:** `V2` (`uniform_mix=0.25`) failed `format_no_signal` (`-0.0316 [-0.0818, +0.0219]`) and cost about `0.25` in the `default` world (`+0.5964` vs `+0.8485`), so it is rejected.
 4. **Seed-batch variation caveat:** The bootstrap intervals are conditional on a single 20-seed batch and understate variation across independent seed batches (for example, `V0` on `format_no_signal` scored `-0.0564` on seeds `3000..3019` vs `-0.2194` on seeds `4000..4019`).
 5. **Fresh final confirmation seeds (`5000..5019`):** Because `V1` was selected on seeds `4000..4019`, the final quoted headline numbers will come exclusively from fresh seeds `5000..5019` across all ten worlds, with no further changes to `policy.py` after seeing those results.
+
+---
+
+## Entry 10 — 2026-11-11 07:00:15 IST (+0530) (Final Summary)
+
+### 1. What shipped
+- `policy.py` (`Policy`): 7-day lag correction (prior + online matured-cohort updates), shrunk Empirical-Bayes per-creative ROAS with `recency_decay=True` (12-day half-life), a `format` prior for unserved creatives, and a concave diminishing-returns marginal allocator (`roas * s / (1 + s / s0)`) with observed delivery caps and `max_share=0.14`.
+- `cold_start_floor=False`, `thompson=False`, and `uniform_mix=0.0` are all off by default (`uniform_mix=0.25` was tested as `V2` and rejected).
+- Final headline on fresh seeds `5000..5019`: `10/10` worlds passed (`95% CI > 0` vs `B1`), ranging from `+0.2003 [+0.1411, +0.2547]` (`format_no_signal`) to `+0.8225 [+0.7518, +0.8966]` (`weak_new_creatives`), with `+0.8030 [+0.7342, +0.8709]` on `default` (`31.10 ms` mean / `114.27 ms` max per call).
+
+### 2. Where I deviated from my own plan or rules
+- **Late initial PREREG:** The first `PREREG.md` commit (`239972a`) landed at `04:44 IST`, about 12 minutes past the 0:30 mark.
+- **Kept `lag_correction` and `format_prior`:** Entry 5's strict rule said to remove them after `default`-world deltas included zero (`+0.0200 [-0.0257, +0.0644]` and `+0.0301 [-0.0223, +0.0790]` on seeds `3000..3019`). I kept both because the point estimates were positive (not negative) and clearly positive in `strong_new_creatives` (`+0.0663 [+0.0198, +0.1168]` and `+0.0765 [+0.0070, +0.1488]`).
+- **Reversed `recency_decay` decision:** Entry 6 turned `recency_decay` off based on `default` alone; Entry 9 reversed that back to `True` after the robustness run on seeds `4000..4019`.
+
+### 3. Checks that came out against me
+- In the first `default`-world ablation (`1000..1014`), `recency_decay=True` (`-0.1708 [-0.2703, -0.0578]`) and `exploration=True` (`-0.2025 [-0.2971, -0.1176]`) were both **harmful**.
+- In `strong_new_creatives` (`3000..3019`), `both_on` (`cold_start_floor=True, thompson=True`) was **harmful** vs `both_off` (`-0.0630 [-0.1139, -0.0068]`).
+- `format_no_signal` **failed** twice with `recency_decay=False`: `-0.0564 [-0.1045, -0.0072]` on seeds `3000..3019` and `-0.2194 [-0.2925, -0.1519]` on `4000..4019`, before passing at `+0.2003 [+0.1411, +0.2547]` on `5000..5019` with `recency_decay=True`.
+
+### 4. Known limits
+- Online lag learning only adapts up to `7` days (`age >= 8` treated as mature).
+- `Clairvoyant` is myopic per day (not a true 30-day dynamic ceiling).
+- Simulator and policy were written in one session, so the shifted worlds reflect risks I anticipated.
+- Several constants in `policy.py` were chosen by hand and sit close to simulator values (audited in `evidence/constants_provenance.md`).
+- The competitor-launch CPM finding (`+$1.574` across 235 rows from 22 launches) was never placebo-tested.
+
+### 5. What I skipped and ordered next steps
+- **Skipped:** `hook_type`/`cta` priors (negative LOCO `OOS R^2`), competitor-launch predictors (absent during days 61–90), copy NLP (`40` creatives), weekday multipliers (within noise), and a media-buyer UI/override (`Policy.explain(day)` is implemented without a UI).
+- **Ordered next steps:** (1) extend online lag learning beyond 7 days and test longer-lag worlds; (2) run a permutation/placebo test on competitor launches; (3) build a manual override and explanation UI over `Policy.explain(day)`; (4) validate across more independent seed batches.

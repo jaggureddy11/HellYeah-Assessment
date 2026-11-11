@@ -66,8 +66,10 @@ DEFAULT_OPTIONS: dict[str, Any] = {
 
 def _to_finite_nonneg(val: Any) -> float | None:
     try:
+        if isinstance(val, bool):
+            return None
         x = float(val)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return None
     if not math.isfinite(x) or x < 0.0:
         return None
@@ -79,7 +81,7 @@ def _to_int(val: Any) -> int | None:
         if isinstance(val, bool):
             return None
         x = int(val)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return None
     return x
 
@@ -530,6 +532,7 @@ class Policy:
                         alloc[cid] += excess * ((hard_max - alloc[cid]) / room_sum)
 
         # Enforce $1 minimum rule: drop any sub-$1 allocations and redistribute cleanly
+        hard_max = max(25.0, float(self.options.get("max_share", 0.14)) * self.daily_budget)
         for _ in range(3):
             total_now = sum(alloc.values())
             if total_now <= 0.0:
@@ -541,12 +544,20 @@ class Policy:
             for cid in sub_one:
                 reclaim += alloc[cid]
                 alloc[cid] = 0.0
-            # Give reclaimed dust to top funded creative below cap (or highest sampled ROAS)
+            # Give reclaimed dust to funded creatives respecting hard_max headroom first
             candidates = sorted(
                 [cid for cid in self.creative_ids if alloc[cid] >= 1.0],
                 key=lambda c: (-sampled_roas[c], c),
             )
-            if candidates:
+            for cid in candidates:
+                if reclaim <= 1e-9:
+                    break
+                room = max(0.0, hard_max - alloc[cid])
+                if room > 1e-9:
+                    add = min(reclaim, room)
+                    alloc[cid] += add
+                    reclaim -= add
+            if reclaim > 1e-9 and candidates:
                 alloc[candidates[0]] += reclaim
 
         shares = self._normalize_shares(alloc)

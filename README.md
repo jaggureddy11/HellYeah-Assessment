@@ -1,114 +1,29 @@
-# Interview kit
+# Creative Rotation Brain
 
-Set this up before the session. It takes a minute and tells you nothing about the
-exercise, which stays sealed until the panel gives you a passphrase.
+## 1. What I built first and why
 
-## Before the day
+I started with append-only [PREREG.md](PREREG.md) from `data/*.csv`, then a config-driven simulator (`sim/env.py`, `sim/world_config.json`) with `B1`, `B2`, and a myopic `Clairvoyant`, then `Policy` (`policy.py`: 7-day lag correction, recency-weighted ROAS with a `format` prior for 10 unserved creatives, concave diminishing returns, and delivery caps). Of those parts, curvature was clearly worth it (ablation `+0.4394` on `default`, seeds `1000..1014`, `evidence/summary.md`), while lag correction and `format` prior were kept on weaker evidence (`+0.0200` and `+0.0301` on `default` with CIs crossing `0`; clearly positive only in `strong_new_creatives`: `+0.0663` and `+0.0765`, `evidence/confirm_summary.md`).
 
+## 2. What I skipped and why
+
+- **`hook_type`/`cta` priors:** Worsened leave-one-out ROAS error.
+- **Competitor signals:** Absent on days 61–90; 235-row / 22-launch CPM spike had no placebo test.
+- **Copy NLP & weekday effects:** Only 40 served creatives; weekday shifts were noise.
+- **Media-buyer UI/override:** `Policy.explain(day)` exists; UI not attempted in the time.
+
+## 3. What the evidence does and does not establish
+
+On fresh seeds `5000..5019` (`evidence/final_summary.md`), `Policy` beats `B1` (`95% CI > 0`) in `10/10` worlds (`+0.2003 [+0.1411, +0.2547]` `format_no_signal` to `+0.8225 [+0.7518, +0.8966]` `weak_new_creatives`). On `default`, it scores `+0.8030 [+0.7342, +0.8709]` (`$138,953` vs `B1` `$106,840`, `Clairvoyant` `$147,217`), taking `31.10 ms` mean (`114.27 ms` max) per call and `1.003 s` max per 30-day run. About 20% of the clairvoyant gap remains (`+0.8030`) and I haven’t broken it down; `Clairvoyant` is myopic per day, so it isn’t a true ceiling. `B2` loses to `B1` (`-0.5861 [-0.6773, -0.4929]`, `$84,033`) likely from delivery caps (`B2` spend `$48,275.83` vs `B1` `$58,569.36` on `default`); I haven’t isolated the other cause, and the simulator may punish concentration more than a real account would.
+
+**Limits:** Simulator and policy were built in one session, and several hand-chosen constants sit close to simulator values (`evidence/constants_provenance.md`). Intervals understate batch variation (`V0` `format_no_signal`: `-0.0564` on `3000..3019` vs `-0.2194` on `4000..4019`). `sim.calibrate` is in-sample only (~2.7% spend under-delivery). Earlier seeds (`1000..1014`, `3000..3019`, `4000..4019`) informed switches, leaving `5000..5019` clean. Online lag learning stops at 7 days.
+
+## 4. With one more day
+
+Extend lag learning past 7 days on longer-lag worlds; placebo-test competitor launches; build a buyer override/UI over `Policy.explain(day)`; test more seed batches.
+
+## 5. Commands
+
+```bash
+uv sync && uv run pytest
+uv run python -m sim.run_final --seeds 20 --start-seed 5000
 ```
-./interview setup          # macOS, Linux, or WSL on Windows
-```
-
-It checks git, python and openssl, reaches the panel's server, wires the panel into your coding agent for
-this machine, makes sure the session recorder runs here, and triggers any
-operating-system permission prompts now rather than mid-session. If anything
-fails, tell us before the day. On Windows, run everything inside WSL; native
-Windows is not supported.
-
-## On the day
-
-```
-./interview start <passphrase>
-```
-
-That opens the exercise, starts the recorder, and starts your 240 minutes of
-working time, which you can split across sittings:
-
-    ./interview pause      stops your clock
-    ./interview resume     starts it again
-
-Both need an internet connection. The clock keeps running unless you pause it,
-through a closed laptop too. Do not work on the exercise while paused: the
-recording shows what changed and when. Work on this computer, in this folder.
-
-Packaging and upload happen by themselves when your working time is up.
-Everything must be finished by 2026-11-16T05:07:13+00:00 (UTC). Do not count
-on being submitted while paused: run `./interview submit` before then. If you
-are paused at that time, what is in this folder is submitted only if this
-computer is on, online and the recorder is running (after a restart, run
-`./interview status` once); otherwise only the checkpoints reach us.
-
-The exercise is opened by the panel's server, which starts the clock the first
-time it accepts the passphrase: `start` needs an internet connection, and
-running it again later picks up the same clock rather than a new one. Run it
-when you are ready to begin, not before. The server opens this session until
-2026-11-16T01:07:13+00:00 (UTC); start before then.
-
-Your agent can ask the panel directly: it has an `ask_panel` tool and a
-`time_left` tool. From a terminal the same two are `./interview ask "..."` and
-`./interview status`.
-
-If your machine sleeps or restarts, the recorder comes back by itself the next
-time your agent or `./interview status` runs. Sleep does not stop your clock;
-only `./interview pause` does, and `./interview resume` is only for starting the
-clock again after `./interview pause`.
-
-## What you may use
-
-Any coding agent, model, editor, language or package manager. Some are recorded
-more fully than others; see "Your tools". A cloud agent or a web chat keeps its
-record on the provider's servers, not in this folder: as you go, record a share
-link to each session, one anyone with it can open, with `./interview link <url>`.
-
-## Your tools
-
-Recorded in full: Claude Code and Codex. Recorded, but export each chat into
-this folder before the end as well, as a backup: GitHub Copilot in VS Code, and
-Cursor. Set up the one you will use before the day:
-
-- Claude Code (the CLI or the VS Code extension): start it in this folder, not
-  a parent folder. Trust the folder when it asks, and when it asks about the
-  `interview-panel` server from `.mcp.json`, allow it; that is the panel.
-- Codex (the CLI, the desktop app or the VS Code extension): run
-  `./interview setup` first, then open Codex in this folder and trust the
-  folder. Then approve the interview's hooks: `/hooks` in the CLI, or Settings >
-  Hooks in the desktop app. Codex asks again whenever they change, so do this
-  after setup. If you use the VS Code extension, also export each chat into this
-  folder before the end. Work in this folder, not in a worktree.
-- Copilot in VS Code: open this folder and choose Trust when VS Code asks. Use
-  the Chat view with Local or Copilot as the session target. Export a chat with
-  *Chat: Export Chat...*.
-- Cursor (the editor, 3.22 or later, or `cursor-agent`): open this folder
-  itself, and choose Enable when Cursor asks about the `interview-panel` MCP
-  server. Run agents in this folder, not in a worktree or a best-of-N run. To
-  redo a turn, send a new message. Export a chat from the chat's ... menu.
-
-On the day, after your first prompt, `./interview status` shows hook records
-for your tool; 0 means its hooks are not approved or not running.
-
-Any other agent, editor or chat is allowed: export the chat into this folder
-before the end, or record a share link with `./interview link <url>`. While a
-tool we cannot read is in use, changes in this folder count as source unknown,
-including lines you type yourself: they are not credited to you.
-
-## What is recorded
-
-A snapshot of the working tree every 20 seconds into
-`.interview/snapshots.git`, which is separate from your own repository and never
-touches your commits. At the end we gather the chat history your tools kept for
-this project, and nothing from your other work.
-
-Every 30 minutes, a copy of the recording so far (the snapshots, your agent
-chat history for this folder and the session logs) is uploaded as a checkpoint. If
-your machine is offline it is sent when you reconnect.
-
-What is not sent: build output. `dist/` and `target/` at the top of this folder, and
-`.venv/`, `__pycache__/` and `node_modules/` anywhere in it, are neither recorded nor
-packaged. Nor is any `.git` directory: your commits travel as a bundle of the whole
-history instead, so commit as much as you like. Keep work you want read outside those
-directories; everything else in this folder goes, whether or not git tracks it.
-
-All of this is done by Python under `.interview/`, plus the small hook and panel
-files setup writes for each tool (in `.claude/`, `.codex/`, `.cursor/`,
-`.github/hooks/` and `.vscode/`, and `.mcp.json`). Read them. Please do not
-disable or remove them.

@@ -98,10 +98,12 @@ def main() -> None:
     parser.add_argument("--start-seed", type=int, default=5000)
     parser.add_argument("--n-boot", type=int, default=2000)
     parser.add_argument("--workers", type=int, default=min(6, os.cpu_count() or 4))
+    parser.add_argument("--out-dir", default="evidence", help="Directory to write final_* outputs.")
     args = parser.parse_args()
 
+    out_dir = Path(args.out_dir)
     t0 = time.perf_counter()
-    EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
     generate_shifted_worlds()
 
     worlds: list[tuple[str, str]] = [
@@ -204,7 +206,7 @@ def main() -> None:
             "cl_gain_pct_ci": bootstrap_mean_ci(cl_gain, n_boot=args.n_boot),
             "n_boot": args.n_boot,
         }
-        (EVIDENCE_DIR / f"final_world_{w_name}.txt").write_text(
+        (out_dir / f"final_world_{w_name}.txt").write_text(
             format_evaluation_report(rep_obj) + "\n", encoding="utf-8"
         )
 
@@ -233,7 +235,7 @@ def main() -> None:
     )
 
     out_md = "\n".join(lines) + "\n"
-    (EVIDENCE_DIR / "final_summary.md").write_text(out_md, encoding="utf-8")
+    (out_dir / "final_summary.md").write_text(out_md, encoding="utf-8")
     print(out_md)
 
 

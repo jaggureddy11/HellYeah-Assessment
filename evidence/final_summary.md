@@ -34,3 +34,5 @@ Criterion: `95% CI` of `(yours - B1) / (clairvoyant - B1)` strictly above `0` vs
 
 ## 3. Raw Printouts
 - Per-world evaluation files: `evidence/final_world_*.txt`.
+
+Reproduced identically across all 10 worlds and all 20 seeds (`5000..5019`) on the shipped policy at commit `644a4f2` after the operational fixes (verified `2026-11-11 06:35:44 IST (+0530)`).
